@@ -70,6 +70,8 @@ model User {
     accounts        Account[]
     sessions        Session[]
     ParticipantData ParticipantData[]
+    PaintingOrder   PaintingOrder[]
+    Order           Order[]
 }
 
 model VerificationToken {
@@ -92,4 +94,116 @@ model ParticipantData {
     isSubmitted Boolean @default(false)
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Models for stock market
+model StockSetting {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name        String @unique
+    description String
+    code        String @unique
+    price       Float
+    maxStock    Int
+
+    StockExchange StockExchange[]
+}
+
+enum StockExchangeConfirmationStatus {
+    PENDING
+    ACCEPTED
+    REJECTED
+}
+
+model StockExchange {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    code           String        @unique
+    buyerName      String
+    quantity       Int
+    price          Float
+    timeOccured    DateTime
+    status         StockExchangeConfirmationStatus
+    StockSetting   StockSetting? @relation(fields: [stockSettingId], references: [id])
+    stockSettingId String?
+
+    imageUrl String
+}
+
+// Models for product market
+model Category {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name    String    @unique
+    Product Product[]
+}
+
+model Product {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    categoryId         String
+    name               String @unique
+    price              Float
+    imageUrl           String
+    description        String
+    displayCoordinateX Float
+    displayCoordinateY Float
+    floatCoordinateX   Float
+    floatCoordinateY   Float
+
+    maxStock    Int
+    isAvailable Boolean  @default(true)
+    Order       Order[]
+    category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId    String
+    productId String
+    count     Int
+    price     Float
+    isPaid    Boolean @default(false)
+
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+// Models for painting market
+model PaintingProduct {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name          String          @unique
+    price         Float
+    imageUrl      String
+    description   String
+    artist        String
+    PaintingOrder PaintingOrder[]
+}
+
+model PaintingOrder {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId     String
+    productId  String
+    offerValue Float
+    isPaid     Boolean @default(false)
+
+    user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+    product PaintingProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
 }

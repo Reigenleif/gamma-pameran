@@ -1,6 +1,15 @@
-import { Box, Button, Flex, Menu, MenuButton, MenuList, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuList,
+  Text,
+} from "@chakra-ui/react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface NavbarProps {
   type?: "signin" | "signup";
@@ -16,22 +25,40 @@ export const Navbar = ({ type }: NavbarProps) => {
       px="2em"
       py="0.5em"
       alignItems="center"
-      mb="1em"
+      boxShadow="4px 4px 5px rgba(0, 0, 0, 0.1)"
     >
-      <Text onClick={() => router.push("/")}> Hello </Text>
-      {!!session ? (
-        <Menu>
-            <MenuButton>{session.user.name ? `Hello, ${session.user.name.split(' ')[0]}` : "Hello" }</MenuButton>
-            <MenuList>
-                <Button onClick={() => router.push('/profile')}>Profile</Button>
-                <Button onClick={() => router.push('/api/auth/signout')}>Sign Out</Button>
-            </MenuList>
-        </Menu>
-      ) : type !== "signin" ? (
-        <Button onClick={() => signIn()}> Sign In </Button>
-      ) : (
-        <Box />
-      )}
+      <Text onClick={() => router.push("/")}> Exhibition M</Text>
+
+      <Flex ml="auto" gap={{ base: "3em", md: "4em" }}>
+        <Link
+          href="/products"
+          className="navlink"
+          prefetch={false}
+        >
+          Products
+        </Link>
+        <Link
+          href="#"
+          className="navlink"
+          prefetch={false}
+        >
+          Why Buy
+        </Link>
+        <Link
+          href="#"
+          className="navlink"
+          prefetch={false}
+        >
+          What Is
+        </Link>
+        <Link
+          href="#"
+          className="navlink"
+          prefetch={false}
+        >
+          How to Invest
+        </Link>
+      </Flex>
     </Flex>
   );
 };

@@ -47,7 +47,7 @@ export function withSession<T extends boolean>({
     }
 
     if (handler) {
-      const result = await handler(ctx, session!);
+      const result = await handler(ctx, session);
       if ("props" in result) {
         const props = await result.props;
         return {
@@ -60,8 +60,8 @@ export function withSession<T extends boolean>({
       } else return result;
     }
 
-    session.user.role = session.user.role || null
-    session.user.image = session.user.image || null
+    session.user.role = session.user.role ?? null
+    session.user.image = session.user.image ?? null
 
     return { props: { session } };
   };

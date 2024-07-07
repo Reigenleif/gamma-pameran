@@ -54,6 +54,17 @@ const purple = {
   5: '#8D47E5'
 };
 
+// MAIN COLORS //
+
+const cream = {
+  200: "#d4c3aa",
+  300: "#ece3d4"
+}
+
+const crimson = {
+  100: "#372a15"
+}
+
 export const colors = {
   white,
   black,
@@ -64,5 +75,7 @@ export const colors = {
   yellow,
   green,
   purple,
-  blue
+  blue,
+  cream,
+  crimson
 };

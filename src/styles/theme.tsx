@@ -7,14 +7,14 @@ import { Textarea } from './component/textarea';
 
 const theme = extendTheme({
   fonts: {
-    heading: 'Bodwars',
-    body: 'SomarRounded-Regular'
+    h: `"Inter", sans-serif`,
+    body: `"Space Mono", monospace`
   },
   colors,
   styles: {
     global: {
       body: {
-        color: 'black'
+        color: 'crimson.100'
       },
       '*': {
         '&::-webkit-scrollbar': {
