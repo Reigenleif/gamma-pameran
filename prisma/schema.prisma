@@ -72,6 +72,7 @@ model User {
     ParticipantData ParticipantData[]
     PaintingOrder   PaintingOrder[]
     Order           Order[]
+    StockExchange   StockExchange[]
 }
 
 model VerificationToken {
@@ -122,16 +123,19 @@ model StockExchange {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    code           String        @unique
+    code           Int                          @unique @default(autoincrement())
     buyerName      String
     quantity       Int
     price          Float
-    timeOccured    DateTime
+    timeOccured    DateTime                        @default(now())
     status         StockExchangeConfirmationStatus
-    StockSetting   StockSetting? @relation(fields: [stockSettingId], references: [id])
+    StockSetting   StockSetting?                   @relation(fields: [stockSettingId], references: [id])
     stockSettingId String?
 
-    imageUrl String
+    buyer   User   @relation(fields: [buyerId], references: [id])
+    buyerId String
+
+    imageUrl String?
 }
 
 // Models for product market

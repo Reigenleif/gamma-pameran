@@ -1,8 +1,9 @@
 import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
+import { StockExchangeConfirmationStatus } from "~/utils/enums";
 
-const stockRouter = createTRPCRouter({
-    adminGetAllStocks: adminProcedure.input(z.object({
+export const stockRouter = createTRPCRouter({
+    adminGetStockExchangeList: adminProcedure.input(z.object({
         buyerName: z.string().optional(),
         page: z.number(),
         pageSize: z.number()
@@ -17,7 +18,7 @@ const stockRouter = createTRPCRouter({
             take: input.pageSize
         })
     }),
-    adminGetStockById: adminProcedure.input(z.object({
+    adminGetStockExchangeById: adminProcedure.input(z.object({
         id: z.string()
     })).query(({ ctx, input }) => {
         return ctx.prisma.stockExchange.findUnique({
@@ -26,55 +27,99 @@ const stockRouter = createTRPCRouter({
             }
         })
     }),
-    adminUpdateStockById: adminProcedure.input(z.object({
-        stockId: z.string(),
+    adminUpdateStockExchangeById: adminProcedure.input(z.object({
+        id: z.string(),
         price: z.number(),
         quantity: z.number(),
-        status: z.enum(["PENDING", "CONFIRMED", "REJECTED"])
+        status: z.enum(["PENDING", "ACCEPTED", "REJECTED"])
     })).mutation(({ ctx, input }) => {
         return ctx.prisma.stockExchange.update({
             where: {
-                id: input.stockId
+                id: input.id
             },
             data: {
-                status: input.status
+                status: input.status,
                 price: input.price,
                 quantity: input.quantity
             }
         })
     }),
-    createStock: publicProcedure.input(z.object({
-        stockId: z.string(),
+    adminDeleteStocExchangekById: adminProcedure.input(z.object({
+        id: z.string()
+    })).mutation(({ ctx, input }) => {
+        return ctx.prisma.stockExchange.delete({
+            where: {
+                id: input.id
+            }
+        })
+    }),
+    getUserStockExchangeList: publicProcedure.query(({ ctx }) => {
+        const session = ctx.session;
+        if (!session) {
+            throw new Error("Unauthorized")
+        }
+        return ctx.prisma.stockExchange.findMany({
+            where: {
+                buyerId: session.user.id
+            }
+        })
+    }),
+    createStockExchange: publicProcedure.input(z.object({
+        stockSettingId: z.string(),
         quantity: z.number(),
         price: z.number(),
+        imageUrl: z.string().optional(),
     })).mutation(({ ctx, input }) => {
         const session = ctx.session;
         if (!session) {
             throw new Error("Unauthorized")
         }
 
+        return ctx.prisma.stockExchange.create({
+            data: {
+                buyerId: session.user.id,
+                stockSettingId: input.stockSettingId,
+                quantity: input.quantity,
+                price: input.price,
+                buyerName: session.user.name ?? "",
+                status: StockExchangeConfirmationStatus.PENDING,
+                timeOccured: new Date()
+            }
+        })
     }),
-    updateStock: publicProcedure.input(z.object({
+    updateStockExchange: publicProcedure.input(z.object({
         id: z.string().optional(),
-        productId: z.string().optional(),
         quantity: z.number().optional(),
         price: z.number().optional(),
-        status: z.string().optional()
-    })).mutation(({ ctx, input }) => {
-        return ctx.prisma.stock.update({
+    })).mutation(async ({ ctx, input }) => {
+        const session = ctx.session;
+        if (!session) {
+            throw new Error("Unauthorized")
+        }
+
+        const userId = session.user.id;
+        const stock = await ctx.prisma.stockExchange.findUnique({
             where: {
                 id: input.id
             },
-            data: input
         })
-    }),
-    deleteStock: publicProcedure.input(z.object({
-        id: z.string()
-    })).mutation(({ ctx, input }) => {
-        return ctx.prisma.stock.delete({
+
+        if (!stock) {
+            throw new Error("Stock not found")
+        } 
+        if (stock.buyerId !== userId) {
+            throw new Error("Unauthorized")
+        }
+
+        return ctx.prisma.stockExchange.update({
             where: {
                 id: input.id
+            },
+            data: {
+                quantity: input.quantity,
+                price: input.price,
             }
         })
-    })
+
+    }),
 })

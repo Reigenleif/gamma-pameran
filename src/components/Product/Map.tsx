@@ -1,6 +1,5 @@
 import {
   MapContainer,
-  Marker,
   Polygon,
   Polyline,
   Popup,
@@ -9,6 +8,8 @@ import {
 import "leaflet/dist/leaflet.css";
 import { majalengkaPolygon } from "./mapPolygon";
 import { RouterOutputs } from "~/utils/api";
+import { MarkerLayer, Marker } from "react-leaflet-marker";
+import { Box, Img, Text } from "@chakra-ui/react";
 
 interface ProductMapProps {
   productList: RouterOutputs["product"]["getAllProducts"];
@@ -20,9 +21,8 @@ const getFloatPosition = (
   product: RouterOutputs["product"]["getAllProducts"][0],
   position: [number, number]
 ) => {
-  console.log(position)
-  return product.displayCoordinateY > position[0]
-    ? product.displayCoordinateX > position[1]
+  return product.displayCoordinateY > position[1]
+    ? product.displayCoordinateX > position[0]
       ? [
           product.displayCoordinateX + RADIUS,
           product.displayCoordinateY + RADIUS,
@@ -31,7 +31,7 @@ const getFloatPosition = (
           product.displayCoordinateX - RADIUS,
           product.displayCoordinateY + RADIUS,
         ]
-    : product.displayCoordinateX > position[1]
+    : product.displayCoordinateX > position[0]
     ? [product.displayCoordinateX + RADIUS, product.displayCoordinateY - RADIUS]
     : [
         product.displayCoordinateX - RADIUS,
@@ -40,8 +40,8 @@ const getFloatPosition = (
 };
 
 const ProductMap = ({ productList }: ProductMapProps) => {
-  const position: [number, number] = [-6.820584, 108.26854];
-  productList = productList.slice(0,12)
+  const position: [number, number] = [-6.756731, 108.251103];
+  productList = productList.slice(0, 12);
 
   return (
     <MapContainer
@@ -68,20 +68,58 @@ const ProductMap = ({ productList }: ProductMapProps) => {
         positions={majalengkaPolygon.south}
         pathOptions={{ color: "blue", fillColor: "blue", opacity: 0.2 }}
       />
-      {productList.map((product, idx) => (
-        <Polyline
-          key={idx}
-          positions={[
-            [product.displayCoordinateY, product.displayCoordinateX],
-            product.floatCoordinateY != 0 && product.floatCoordinateX != 0
-              ? [product.floatCoordinateX, product.floatCoordinateY]
-              : getFloatPosition(product, position),
-          ]}
-          pathOptions={{ color: "white" }}
-        />
-      ))}
+      {productList.map((product, idx) => {
+        return (
+          <Polyline
+            key={idx}
+            positions={[
+              [product.displayCoordinateX, product.displayCoordinateY],
+              product.floatCoordinateX != 0 && product.floatCoordinateY != 0
+                ? [product.floatCoordinateX, product.floatCoordinateY]
+                : getFloatPosition(product, position),
+            ]}
+            pathOptions={{ color: "white" }}
+          />
+        );
+      })}
+      {productList.map((product, idx) => {
+        return (
+          <MarkerLayer key={idx}>
+            <Marker
+              placement="center"
+              position={
+                product.floatCoordinateX != 0 && product.floatCoordinateY != 0
+                  ? [product.floatCoordinateX, product.floatCoordinateY]
+                  : getFloatPosition(product, position)
+              }
+            >
+              <Box
+                px="1em"
+                py="1em"
+                color="cream.100"
+                border="1px solid"
+                borderRadius="10px"
+                borderColor="cream.200"
+                bg="cream.300"
+              >
+                <Img
+                  src={product.imageUrl}
+                  w="min(8em, 50vw)"
+                  h="min(8em, 50vw)"
+                  borderRadius="5px"
+                />
+                <Text fontSize="md" fontWeight="bold" w="100%" textAlign="center">
+                  {product.name}
+                </Text>
+              </Box>
+            </Marker>
+          </MarkerLayer>
+        );
+      })}
     </MapContainer>
   );
 };
 
 export default ProductMap;
+
+export type ProductMapType = typeof ProductMap;

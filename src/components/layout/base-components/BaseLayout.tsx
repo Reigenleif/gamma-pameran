@@ -7,7 +7,7 @@ import { Footer } from "./Footer";
 
 export interface LayoutProps {
   children: React.ReactNode;
-  type?: "signin" | "signup";
+  type?: "signin" | "signup" | "admin";
 }
 
 export interface ProtectedLayoutProps extends LayoutProps {

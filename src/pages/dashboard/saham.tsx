@@ -27,7 +27,7 @@ export default function SahamDashboardPage() {
   const { data: session } = useSession();
 
   return (
-    <AuthorizedRoleLayout session={session}>
+    <AuthorizedRoleLayout session={session} type="admin">
       <Flex flexDir="row">
         <DashboardSideNav />
         <Flex flexDir="column" w="100%" p="1em" gap="1em">
