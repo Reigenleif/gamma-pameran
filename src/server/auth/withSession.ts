@@ -8,6 +8,7 @@ import { getServerSession, type Session } from "next-auth";
 import { authOptions } from ".";
 import { UserRole } from "@prisma/client";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */ 
 type WithSessionParams<T extends boolean> = {
   force?: T;
   handler?: (

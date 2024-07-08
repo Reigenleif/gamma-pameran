@@ -63,12 +63,15 @@ export const productRouter = createTRPCRouter({
     createOrder: publicProcedure.input(z.object({
         userId: z.string(),
         productId: z.string(),
-        quantity: z.number()
+        quantity: z.number(),
+        price: z.number()
     })).mutation(({ ctx, input }) => {
         return ctx.prisma.order.create({
             data: {
                 userId: input.userId,
                 productId: input.productId,
+                count: input.quantity,
+                price: input.price
             }
         })
     }),
