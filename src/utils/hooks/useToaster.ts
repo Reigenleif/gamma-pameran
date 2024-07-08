@@ -5,6 +5,7 @@ type voidFn = () => void | undefined;
 export const useToaster = () => {
   const toast = useToast();
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const toaster = (
     pr: Promise<any>,
     fns?: {
@@ -28,7 +29,9 @@ export const useToaster = () => {
       });
       thenFn && thenFn();
     })
-      .catch((err) => {
+      .catch((err: {
+        message: string;
+      }) => {
         toast({
           title: "Error",
           description: err.message,

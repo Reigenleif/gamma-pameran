@@ -40,7 +40,7 @@ export const Profile = () => {
       folder: FolderEnum.PROFILE,
       filename: `${profile.id}.png`,
     }).then(({ url }) => setImageUrl(url));
-  }, [profile]);
+  }, [profile, downloader]);
 
   console.log(imageUrl);
 
@@ -91,8 +91,8 @@ export const Profile = () => {
       {!profileQuery.isLoading && (
         <EditProfileModal
           initState={{
-            name: profile.name || "",
-            email: profile.email || "",
+            name: profile.name ?? "",
+            email: profile.email ?? "",
           }}
           updateProfile={updateProfile}
         />
@@ -103,7 +103,7 @@ export const Profile = () => {
 
 interface ProfileInfoRowProps {
   placeholder: string;
-  value: any;
+  value: string | null | undefined;
 }
 
 const ProfileInfoRow = ({ placeholder, value }: ProfileInfoRowProps) => {
