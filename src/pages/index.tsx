@@ -8,8 +8,6 @@ import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
 import { BsGraphUpArrow } from "react-icons/bs";
 
-export const getServerSideProps = withSession({ force: true });
-
 export default function Home() {
   return (
     <PublicLayout>
