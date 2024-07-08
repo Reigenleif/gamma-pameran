@@ -20,7 +20,7 @@ const RADIUS = 0.07;
 const getFloatPosition = (
   product: RouterOutputs["product"]["getAllProducts"][0],
   position: [number, number]
-) => {
+): [number, number] => {
   return product.displayCoordinateY > position[1]
     ? product.displayCoordinateX > position[0]
       ? [
@@ -57,15 +57,15 @@ const ProductMap = ({ productList }: ProductMapProps) => {
     >
       <TileLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
       <Polygon
-        positions={majalengkaPolygon.north}
+        positions={majalengkaPolygon.north as [number, number][]}
         pathOptions={{ color: "red", fillColor: "red", opacity: 0.2 }}
       />
       <Polygon
-        positions={majalengkaPolygon.middle}
+        positions={majalengkaPolygon.middle as [number, number][]}
         pathOptions={{ color: "yellow", fillColor: "yellow", opacity: 0.2 }}
       />
       <Polygon
-        positions={majalengkaPolygon.south}
+        positions={majalengkaPolygon.south as [number, number][]}
         pathOptions={{ color: "blue", fillColor: "blue", opacity: 0.2 }}
       />
       {productList.map((product, idx) => {
