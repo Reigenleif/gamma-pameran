@@ -25,6 +25,24 @@ const defaultButton: SystemStyleFunction = () => {
   };
 };
 
+const iconButton: SystemStyleFunction = () => {
+  return {
+    color: 'cream.100',
+    borderRadius: '12',
+    bg: 'cream.300',
+    border: '0.5px solid',
+    borderColor: 'cream.100',
+    _hover: {
+      color: 'cream.200',
+      transform: 'scale(1.1)',
+      _disabled: {
+        bg: 'gray.400',
+        shadow: 'none'
+      }
+    },
+  }
+}
+
 const outlineButton: SystemStyleFunction = () => {
   return {
     color: 'black',
@@ -133,7 +151,8 @@ export const Button: ComponentStyleConfig = {
     outline: outlineButton,
     'mono-black': monoBlackButton,
     'mono-gray': monoGrayButton,
-    'mono-outline': monoOutlineButton
+    'mono-outline': monoOutlineButton,
+    icon: iconButton
   },
   defaultProps: {
     variant: 'solid'
