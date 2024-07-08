@@ -7,7 +7,7 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -57,17 +57,17 @@ export const Navbar = ({ type }: NavbarProps) => {
             <MenuButton as={Button} variant="ghost">
               {session.user.name}
             </MenuButton>
-            <MenuList>
+            <MenuList display="flex" gap="1em" p="1em" flexDir="column" alignItems="center">
               <Link href="/dashboard" className="navlink" prefetch={false}>
                 Dashboard
               </Link>
-              <Button variant="ghost" onClick={() => signIn("google")}>
+              <Button variant="ghost" onClick={() => signOut()}>
                 Logout
               </Button>
             </MenuList>
           </Menu>
         ) : (
-          <Button variant="ghost" onClick={() => signIn("google")}>
+          <Button variant="ghost" onClick={() => signIn()}>
             Login
           </Button>
         )}
