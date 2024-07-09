@@ -1,5 +1,5 @@
 export enum StockExchangeConfirmationStatus {
     PENDING = 'PENDING',
-    CONFIRMED = 'CONFIRMED',
+    ACCEPTED = 'ACCEPTED',
     REJECTED = 'REJECTED'
 }

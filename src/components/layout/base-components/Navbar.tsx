@@ -29,10 +29,12 @@ export const Navbar = ({ type }: NavbarProps) => {
       pos="sticky"
       top="0"
     >
-      <Text onClick={() => router.push("/")}> Exhibition M</Text>
-      <Flex ml="auto" gap={{ base: "3em", md: "4em" }} fontSize="md">
+      <Text onClick={() => router.push("/")} cursor="pointer">
+        Terakota Stock Exchange
+      </Text>
+      <Flex ml="auto" gap={{ base: "3em", md: "4em" }} fontSize="sm">
         {/* Webpage Buttons */}
-        {type != "admin" ? (
+        {type !== "admin" ? (
           <>
             <Link href="/products" className="navlink" prefetch={false}>
               Produk Kami
@@ -57,7 +59,13 @@ export const Navbar = ({ type }: NavbarProps) => {
             <MenuButton as={Button} variant="ghost">
               {session.user.name}
             </MenuButton>
-            <MenuList display="flex" gap="1em" p="1em" flexDir="column" alignItems="center">
+            <MenuList
+              display="flex"
+              gap="1em"
+              p="1em"
+              flexDir="column"
+              alignItems="center"
+            >
               <Link href="/dashboard" className="navlink" prefetch={false}>
                 Dashboard
               </Link>

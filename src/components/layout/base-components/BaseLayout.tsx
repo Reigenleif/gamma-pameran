@@ -1,9 +1,11 @@
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { Navbar } from "./Navbar";
 import { type Session } from "next-auth";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { Footer } from "./Footer";
+import Head from "next/head";
+import { useIsMobile } from "~/utils/hooks/useIsMobile";
 
 export interface LayoutProps {
   children: React.ReactNode;
@@ -15,14 +17,25 @@ export interface ProtectedLayoutProps extends LayoutProps {
 }
 
 export function BaseLayout({ children, type }: LayoutProps) {
+  const isMobile = useIsMobile();
+
   return (
-    <Flex flexDir="column" w="100vw" overflowX="hidden" minH="100dvh" bg="cream.300">
-      <Navbar type={type} />
-      {children}
-      <Footer/>
-    </Flex>
+    <>
+      <Head>
+        <link rel="icon" href="/icon.webp" />
+      </Head>
+      <Flex
+        flexDir="column"
+        w="100vw"
+        overflowX="hidden"
+        bg="cream.300"
+        minH="100dvh"
+        fontSize={isMobile ? "0.5rem" : "md"}
+      >
+        <Navbar type={type} />
+        <Box minH="calc(100dvh - 7.5em)">{children}</Box>
+        <Footer />
+      </Flex>
+    </>
   );
 }
-
-
-

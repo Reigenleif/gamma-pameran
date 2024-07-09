@@ -13,25 +13,12 @@ export const Footer = () => {
       borderColor="cream.200"
       justifyContent="space-between"
     >
-      <Text fontSize="sm">
-        &copy; 2024 Stock Showcase. All rights reserved.
+      <Text fontSize="md">
+        &copy;2024 Jatiwangi Art Festival. All rights reserved.
       </Text>
-      <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-        <Link
-          href="#"
-          className="text-xs hover:underline underline-offset-4"
-          prefetch={false}
-        >
-          Terms of Service
-        </Link>
-        <Link
-          href="#"
-          className="text-xs hover:underline underline-offset-4"
-          prefetch={false}
-        >
-          Privacy Policy
-        </Link>
-      </nav>
+      <Text fontSize="md">
+        By Gamma Metrics
+      </Text>
     </Flex>
   );
 };

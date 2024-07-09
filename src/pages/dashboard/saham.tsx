@@ -22,7 +22,8 @@ import { api } from "~/utils/api";
 import { useState } from "react";
 import { StockExchangeConfirmationStatus } from "~/utils/enums";
 import { MdEdit } from "react-icons/md";
-import { StockSetting } from "~/components/dashboard/stock/StockSetting";
+import { StockSettingComponent } from "~/components/dashboard/stock/StockSetting";
+import { StockExchangeComponent } from "~/components/dashboard/stock/StockExchange";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -73,32 +74,9 @@ const DashboardPageComponent = () => {
           Dashboard Saham
         </Text>
         <Divider size="1em" bg="black" h="2px" />
-        <StockSetting />
+        <StockSettingComponent />
         <Divider size="1em" bg="black" h="2px" />
-        <Text fontSize="2xl" fontWeight="bold">
-          Daftar Pembeli Lembar Saham
-        </Text>
-        <Table>
-          <Tr fontWeight="bold">
-            <Td>Nama</Td>
-            <Td>Email</Td>
-            <Td>Jumlah Lembar Saham</Td>
-          </Tr>
-          <Tr>
-            <Td>John Doe</Td>
-            <Td>
-              <Text color="blue.500"></Text>
-            </Td>
-            <Td>10</Td>
-          </Tr>
-          <Tr>
-            <Td>Jane Doe</Td>
-            <Td>
-              <Text color="blue.500"></Text>
-            </Td>
-            <Td>5</Td>
-          </Tr>
-        </Table>
+        <StockExchangeComponent />
       </Flex>
     </Flex>
   );

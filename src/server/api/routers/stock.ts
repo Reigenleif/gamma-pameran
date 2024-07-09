@@ -107,6 +107,7 @@ export const stockRouter = createTRPCRouter({
         buyerName: z.string().optional(),
         page: z.number(),
         pageSize: z.number(),
+        status: z.enum(["PENDING", "ACCEPTED", "REJECTED"]).optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -115,9 +116,13 @@ export const stockRouter = createTRPCRouter({
           buyerName: {
             contains: input.buyerName,
           },
+          status: input.status,
         },
         skip: (input.page - 1) * input.pageSize,
         take: input.pageSize,
+        include: {
+            StockSetting: true
+        }
       });
     }),
   adminGetStockExchangeById: adminProcedure
@@ -137,9 +142,9 @@ export const stockRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        price: z.number(),
-        quantity: z.number(),
-        status: z.enum(["PENDING", "ACCEPTED", "REJECTED"]),
+        price: z.number().optional(),
+        quantity: z.number().optional(),
+        status: z.enum(["PENDING", "ACCEPTED", "REJECTED"]).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {

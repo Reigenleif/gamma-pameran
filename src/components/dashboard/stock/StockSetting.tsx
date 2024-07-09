@@ -2,11 +2,13 @@ import {
   Button,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
   Table,
+  TableContainer,
   Td,
   Text,
   Tr,
@@ -32,7 +34,7 @@ const StockSettingFormSchema = z.object({
 
 type StockSettingFormFields = z.infer<typeof StockSettingFormSchema>;
 
-export const StockSetting = () => {
+export const StockSettingComponent = () => {
   const toaster = useToaster();
   const { register, formState, handleSubmit, reset, setValue } =
     useForm<StockSettingFormFields>({
@@ -88,43 +90,46 @@ export const StockSetting = () => {
       <Text fontSize="2xl" fontWeight="bold">
         Pengaturan Saham
       </Text>
-      <Table>
-        <Tr fontWeight="bold">
-          <Td>No</Td>
-          <Td>Kode</Td>
-          <Td>Nama Saham</Td>
-          <Td>Harga</Td>
-          <Td>Lembar Total</Td>
-          <Td>Lembar Tersisa</Td>
-          <Td>Edit</Td>
-        </Tr>
-        {stockSettingList?.map((stockSetting, idx) => {
-          return (
-            <Tr key={idx}>
-              <Td>{idx + 1}</Td>
-              <Td>{stockSetting.code}</Td>
-              <Td>{stockSetting.name}</Td>
-              <Td>{stockSetting.price}</Td>
-              <Td>{stockSetting.maxStock}</Td>
-              <Td>{stockSetting.maxStock - stockSetting.stockExchangeSum}</Td>
-              <Td>
-                <Button
-                  variant="icon"
-                  onClick={() => displayStockSettingEditor(stockSetting.id)}
-                >
-                  <MdEdit />
-                </Button>
-              </Td>
-            </Tr>
-          );
-        })}
-      </Table>
+      <TableContainer>
+        <Table>
+          <Tr fontWeight="bold">
+            <Td>No</Td>
+            <Td>Kode</Td>
+            <Td>Nama Saham</Td>
+            <Td>Harga</Td>
+            <Td>Lembar Total</Td>
+            <Td>Lembar Tersisa</Td>
+            <Td>Edit</Td>
+          </Tr>
+          {stockSettingList?.map((stockSetting, idx) => {
+            return (
+              <Tr key={idx}>
+                <Td>{idx + 1}</Td>
+                <Td>{stockSetting.code}</Td>
+                <Td>{stockSetting.name}</Td>
+                <Td>{stockSetting.price}</Td>
+                <Td>{stockSetting.maxStock}</Td>
+                <Td>{stockSetting.maxStock - stockSetting.stockExchangeSum}</Td>
+                <Td>
+                  <Button
+                    variant="icon"
+                    onClick={() => displayStockSettingEditor(stockSetting.id)}
+                  >
+                    <MdEdit />
+                  </Button>
+                </Td>
+              </Tr>
+            );
+          })}
+        </Table>
+      </TableContainer>
       <Modal
         isOpen={stockSettingDisclosure.isOpen}
         onClose={stockSettingDisclosure.onClose}
       >
         <ModalOverlay />
         <ModalContent>
+          <ModalCloseButton />
           <ModalHeader>Edit Pengaturan Saham</ModalHeader>
           <ModalBody>
             <StringInput
@@ -148,12 +153,14 @@ export const StockSetting = () => {
             <StringInput
               field="price"
               title="Harga"
+              type="number"
               register={register}
               error={formState.errors.price}
             />
             <StringInput
               field="maxStock"
               title="Lembar Saham"
+              type="number"
               register={register}
               error={formState.errors.maxStock}
             />
