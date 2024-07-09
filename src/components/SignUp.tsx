@@ -5,13 +5,14 @@ import { useToaster } from "~/utils/hooks/useToaster";
 import { PasswordInput } from "~/utils/elements/PasswordInput";
 
 interface SignUpProps {
-  csrfToken: string
+  csrfToken: string;
 }
 
-export const SignUp = ({csrfToken}: SignUpProps) => {
+export const SignUp = ({ csrfToken }: SignUpProps) => {
   const toast = useToast();
   const toaster = useToaster();
 
+  const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
@@ -30,10 +31,13 @@ export const SignUp = ({csrfToken}: SignUpProps) => {
     setConfirmPasswordInput(e.target.value);
   };
 
+  const nameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNameInput(e.target.value);
+  };
+
   const createUserMutation = api.user.createUser.useMutation();
 
   const credentialSignUp = (email: string, password: string) => {
-
     // TODO: Kasih CSRF Validation & reCAPTCHA
     toaster(createUserMutation.mutateAsync({ email, password }));
   };
@@ -41,7 +45,7 @@ export const SignUp = ({csrfToken}: SignUpProps) => {
   const credentialButtonClickHandler = () => {
     if (emailInput === "") {
       toast({
-        title: "Email cannot be empty",
+        title: "Email Tidak Boleh Kosong",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -51,7 +55,7 @@ export const SignUp = ({csrfToken}: SignUpProps) => {
 
     if (passwordInput === "") {
       toast({
-        title: "Password cannot be empty",
+        title: "Password Tidak Boleh Kosong",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -61,7 +65,7 @@ export const SignUp = ({csrfToken}: SignUpProps) => {
 
     if (!emailInput.includes("@")) {
       toast({
-        title: "Please enter a valid email address",
+        title: "Email Tidak Valid",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -71,7 +75,7 @@ export const SignUp = ({csrfToken}: SignUpProps) => {
 
     if (passwordInput.length < 8) {
       toast({
-        title: "Password must be at least 8 characters long",
+        title: "Password minimal sepanjang 8 huruf",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -81,7 +85,17 @@ export const SignUp = ({csrfToken}: SignUpProps) => {
 
     if (passwordInput !== confirmPasswordInput) {
       toast({
-        title: "Passwords do not match",
+        title: "Passwords tidak sesuai",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (nameInput === "") {
+      toast({
+        title: "Nama Tidak Boleh Kosong",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -92,46 +106,53 @@ export const SignUp = ({csrfToken}: SignUpProps) => {
   };
 
   return (
-      <Flex justifyContent="center">
-        <Flex
-          flexDirection="column"
-          border="1px solid black"
-          borderRadius="10px"
-          p="1em"
-          w="min(30em,95%)"
-        >
-          <Text textAlign="center">Sign Up</Text>
-          <Input
-            mt="1em"
-            w="100%"
-            value={emailInput}
-            onChange={emailChangeHandler}
-            placeholder="Email"
-          />
-          <PasswordInput
-            mt="1em"
-            w="100%"
-            value={passwordInput}
-            onChange={passwordChangeHandler}
-            placeholder="Password"
-          />
-          <PasswordInput
-            mt="1em"
-            w="100%"
-            value={confirmPasswordInput}
-            onChange={confirmPasswordChangeHandler}
-            placeholder="Confirm Password"
-          />
+    <Flex justifyContent="center" pt="2em">
+      <Flex
+        flexDirection="column"
+        border="1px solid black"
+        borderRadius="10px"
+        p="1em"
+        w="min(30em,95%)"
+      >
+        <Text textAlign="center">Buat Akun</Text>
+        <Input
+          mt="1em"
+          w="100%"
+          value={nameInput}
+          onChange={nameChangeHandler}
+          placeholder="Nama"
+        />
+        <Input
+          mt="1em"
+          w="100%"
+          value={emailInput}
+          onChange={emailChangeHandler}
+          placeholder="Email"
+        />
+        <PasswordInput
+          mt="1em"
+          w="100%"
+          value={passwordInput}
+          onChange={passwordChangeHandler}
+          placeholder="Password"
+        />
+        <PasswordInput
+          mt="1em"
+          w="100%"
+          value={confirmPasswordInput}
+          onChange={confirmPasswordChangeHandler}
+          placeholder="Konfimasi Password"
+        />
 
-          <Button
-            onClick={credentialButtonClickHandler}
-            w="50%"
-            m="auto"
-            mt="1em"
-          >
-            Sign Up
-          </Button>
-        </Flex>
+        <Button
+          onClick={credentialButtonClickHandler}
+          w="50%"
+          m="auto"
+          mt="1em"
+        >
+          Daftar
+        </Button>
       </Flex>
+    </Flex>
   );
 };

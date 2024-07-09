@@ -10,8 +10,21 @@ import { BsGraphUpArrow } from "react-icons/bs";
 import { MdGroups2 } from "react-icons/md";
 import { colors } from "~/styles/component/colors";
 import { TbMoneybag } from "react-icons/tb";
+import { Slide, StaggeredSlide } from "~/utils/animation/entrance-animation";
+import { useMemo } from "react";
+import { ProductMapType } from "~/components/Product/Map";
+import dynamic, { Loader } from "next/dynamic";
 
 export default function Home() {
+  const ProductMap = useMemo(
+    () =>
+      dynamic((() => import("~/components/Product/Map")) as Loader, {
+        loading: () => <p>A map is loading</p>,
+        ssr: false,
+      }),
+    []
+  ) as ProductMapType;
+
   return (
     <PublicLayout>
       <Flex
@@ -22,89 +35,101 @@ export default function Home() {
       >
         {/* Section 1 */}
         <Flex
-          flexDir={{ base: "column", lg: "row" }}
-          alignItems={{ base: "center", lg: "none" }}
+          flexDir={["column", "row"]}
+          alignItems={["center", "none"]}
           justifyContent="center"
           gap="5em"
           mt="2em"
           py="10em"
           px="5%"
         >
-          <Flex flexDir="column" gap="3em" w="min(60em, 100%)">
-            <Text fontSize="4em" fontWeight="bold" fontStyle="h">
-              What is Terakota Stock Exchange?
-            </Text>
-            <Text fontSize="3em" textAlign="justify">
-              Pasar Saham Terakota merupakan program yang diprakarsai oleh
-              Koperasi Tanaraya Jalan Kebudayaan bersama dengan Jatiwangi Art
-              Factory untuk menghimpun Dana Abadi Kebudayaan melalui skema
-              transaksi jual-beli saham ekosistem terafiliasi Koperasi Tanaraya
-              Jalan Kebudayaan. Program ini diinisiasi dengan tujuan:
-            </Text>
+          <Flex flexDir="column" gap="3em" w="min(55em, 100%)">
+            <Slide from="left">
+              <Text fontSize="3xl" fontWeight="bold" fontStyle="h">
+                What is Terakota Stock Exchange?
+              </Text>
+              <Text fontSize="2xl" textAlign="justify">
+                Pasar Saham Terakota merupakan program yang diprakarsai oleh
+                Koperasi Tanaraya Jalan Kebudayaan bersama dengan Jatiwangi Art
+                Factory untuk menghimpun Dana Abadi Kebudayaan melalui skema
+                transaksi jual-beli saham ekosistem terafiliasi Koperasi
+                Tanaraya Jalan Kebudayaan. Program ini diinisiasi dengan tujuan
+                berikut.
+              </Text>
+            </Slide>
           </Flex>
 
-          <Flex flexDir="column" gap="2em" w={{ base: "90%", lg: "30em" }}>
-            <Flex alignItems="center" gap="1em">
-              <Box w="10em">
-                <MdGroups2 size="5em" color={colors.cream[100]} />
-              </Box>
-              <Flex flexDir="column" gap="1em">
-                <Text fontSize="3em" textAlign="justify">
-                  Menggagas gerakan kolektif dalam rangka pengembangan Kawasan
-                  Pemajuan Kebudayaan Terakota
-                </Text>
+          <Flex flexDir="column" gap="2em" w={["100%", "30em"]}>
+            <StaggeredSlide from="right" duration={0.5}>
+              <Flex alignItems="center" gap="1em">
+                <Box w="10em">
+                  <MdGroups2 size="5em" color={colors.cream[100]} />
+                </Box>
+                <Flex flexDir="column" gap="1em">
+                  <Text fontSize="xl" textAlign="justify">
+                    Menggagas gerakan kolektif dalam rangka pengembangan Kawasan
+                    Pemajuan Kebudayaan Terakota
+                  </Text>
+                </Flex>
               </Flex>
-            </Flex>
 
-            <Flex alignItems="center" gap="1em">
-              <Box w="10em">
-                <TbMoneybag size="5em" color={colors.cream[100]} />
-              </Box>
-              <Flex flexDir="column" gap="1em">
-                <Text fontSize="xl" textAlign="justify">
-                  Menginisiasi dan menghimpun Dana Abadi Kebudayaan dalam rangka
-                  mendukung gerakan implementasi Kawasan Pemajuan Kebudayaan
-                  Terakota serta mendorong kemandirian kolektif seni
-                </Text>
+              <Flex alignItems="center" gap="1em">
+                <Box w="10em">
+                  <TbMoneybag size="5em" color={colors.cream[100]} />
+                </Box>
+                <Flex flexDir="column" gap="1em">
+                  <Text fontSize="xl" textAlign="justify">
+                    Menginisiasi dan menghimpun Dana Abadi Kebudayaan dalam
+                    rangka mendukung gerakan implementasi Kawasan Pemajuan
+                    Kebudayaan Terakota serta mendorong kemandirian kolektif
+                    seni
+                  </Text>
+                </Flex>
               </Flex>
-            </Flex>
+            </StaggeredSlide>
           </Flex>
         </Flex>
 
         {/* Section 2 */}
-        <Flex bg="cream.200" w="100%" justifyContent="center" py="10em" px="5%">
+        <Flex bg="cream.200" w="100%" alignItems="center" py="10em" px="5%">
           <Flex
             flexDir={{ base: "column-reverse", lg: "row" }}
-            gap="3em"
             justifyContent="center"
             w="100%"
           >
-            <Flex flexDir="column" w="min(100em, 90%)">
+            <Flex flexDir="column" w="min(100em, 90%)" gap="3rem">
               <Text fontSize="4xl" fontWeight="bold" fontStyle="h" w="100%">
                 Why does Terakota Stock Exhange need to be implemented?
               </Text>
-              <Text fontSize="2xl" textAlign="justify" w="100%">
-                Hadirnya Pasar Saham Terakota (Terakota Stock Exchange)
-                merupakan sebuah inovasi gerakan kolektif dalam bentuk urundana
-                (crowdfunding) untuk mendukung inisiasi Dana Abadi Kebudayaan
-                oleh Koperasi Tanaraya Jalan Kebudayaan bersama dengan Jatiwangi
-                Art Factory, serta gagasan pengembangan Kawasan Pemajuan
-                Kebudayaan. Adapun program Kawasan Pemajuan Kebudayaan merupakan
-                program yang telah disepakati dalam Musyawarah Perencanaan dan
-                Pembangunan (Musrenbang) bersama dengan Kementerian
-                Perencanaan/Bappenas, Kementerian Pendidikan dan Kebudayaan, dan
-                Jatiwangi Art Factory dalam Pekan Kebudayaan Nasional (PKN 2023)
-                sebagai bentuk komitmen pengarusutamaan kebudayaan dalam rencana
-                pembangunan menuju Indonesia Emas 2045.
-                <br />
-                Inisiasi Dana Abadi Kebudayaan yang dihimpun oleh Pasar Saham
-                Terakota bak oase di teriknya gurun pasir skena kolektif seni
-                tanah air sekaligus terobosan untuk mendorong resiliensi dalam
-                bereksperimentasi dan berkegiatan seni. Selain itu, Dana Abadi
-                Kebudayaan dalam jangka panjang juga diproyeksikan untuk menjadi
-                solusi untuk mendorong kemandirian kolektif seni nasional.
-                <br />
-                Dalam pengimplementasiannya, Dana Abadi Kebudayaan akan
+              <Section2Box
+                text="Hadirnya Pasar Saham Terakota (Terakota Stock Exchange)
+                  merupakan sebuah inovasi gerakan kolektif dalam bentuk
+                  urundana (crowdfunding) untuk mendukung inisiasi Dana Abadi
+                  Kebudayaan oleh Koperasi Tanaraya Jalan Kebudayaan bersama
+                  dengan Jatiwangi Art Factory, serta gagasan pengembangan
+                  Kawasan Pemajuan Kebudayaan. Adapun program Kawasan Pemajuan
+                  Kebudayaan merupakan program yang telah disepakati dalam
+                  Musyawarah Perencanaan dan Pembangunan (Musrenbang) bersama
+                  dengan Kementerian Perencanaan/Bappenas, Kementerian
+                  Pendidikan dan Kebudayaan, dan Jatiwangi Art Factory dalam
+                  Pekan Kebudayaan Nasional (PKN 2023) sebagai bentuk komitmen
+                  pengarusutamaan kebudayaan dalam rencana pembangunan menuju
+                  Indonesia Emas 2045."
+                arrangement="left"
+                imgUrl="home/sect2-1.png"
+              />
+              <Section2Box
+                text="Inisiasi Dana Abadi Kebudayaan yang dihimpun oleh Pasar Saham
+                  Terakota bak oase di teriknya gurun pasir skena kolektif seni
+                  tanah air sekaligus terobosan untuk mendorong resiliensi dalam
+                  bereksperimentasi dan berkegiatan seni. Selain itu, Dana Abadi
+                  Kebudayaan dalam jangka panjang juga diproyeksikan untuk menjadi
+                  solusi untuk mendorong kemandirian kolektif seni nasional."
+                arrangement="right"
+                imgUrl="home/sect2-2.png"
+              />
+              <Section2Box
+                text="Dalam pengimplementasiannya, Dana Abadi Kebudayaan akan
                 diselaraskan dengan pengembangan sektor-sektor berbasis
                 identitas kebudayaan dan kewilayahan. Majalengka, sebagai salah
                 satu daerah di Provinsi Jawa Barat sekaligus tempat lahirnya
@@ -112,28 +137,37 @@ export default function Home() {
                 dan Jatiwangi Art Factory, dikenal memiliki identitas kebudayaan
                 terakota serta keunggulan kompetitif yang disegmentasi menjadi
                 tiga bagian wilayah Majalengka berdasarkan analisis sektoral
-                Produk Domestik Regional Bruto (PDRB).
-                <br />
+                Produk Domestik Regional Bruto (PDRB)."
+                arrangement="left"
+                imgUrl="home/sect2-3.png"
+              />
+              <Section2Box
+                text="
                 Pada wilayah Majalengka bagian Utara, keunggulan kompetitif pada
                 sektor manufaktur dan jasa. Bergerak menuju ke Majalengka bagian
                 Tengah, keunggulan kompetitif yang dimiliki oleh Majalengka
                 Tengah adalah industri Food and Beverage (FnB), kriya, dan
                 fesyen. Sedangkan pada wilayah Majalengka bagian Selatan
-                ditunjang oleh sektor pertanian, kehutanan, dan perikanan.
-                <br />
-                Dana Abadi Kebudayaan nantinya diproyeksikan untuk menjadi
+                ditunjang oleh sektor pertanian, kehutanan, dan perikanan."
+                arrangement="right"
+                imgUrl="/pots.webp"
+              />
+              <Section2Box
+                text="Dana Abadi Kebudayaan nantinya diproyeksikan untuk menjadi
                 katalis sekaligus akselerator eksperimentasi seni dan budaya
                 berbasis identitas kebudayaan daerah oleh kolektif seni yang
                 diharmonisasi dengan isu dan narasi pembangunan daerah berbasis
-                potensi kewilayahan.
-              </Text>
+                potensi kewilayahan."
+                arrangement="left"
+                imgUrl="home/sect2-3.png"
+              />
             </Flex>
           </Flex>
         </Flex>
 
         {/* Section 3 */}
         <Flex
-          flexDir={{ base: "column", lg: "row" }}
+          flexDir={"column"}
           alignItems={{ base: "center", lg: "none" }}
           justifyContent="center"
           gap="5em"
@@ -141,9 +175,10 @@ export default function Home() {
           py="2em"
           px="5%"
         >
-          <Text fontSize="4xl" fontWeight="bold" fontStyle="h" w="100%">
+          <Text fontSize="4xl" fontWeight="bold" fontStyle="h" w="100%" textAlign="center">
             Peta Majalengka
           </Text>
+          <ProductMap productList={[]} />
         </Flex>
 
         {/* Section 4 */}
@@ -160,11 +195,71 @@ export default function Home() {
             {" "}
             Tertarik Untuk Membeli Saham Kami?
           </Text>
-          <Button mt="1em">
-            <Link href="/saham">Beli Saham</Link>
-          </Button>
+
+          <Link href="/saham">
+            <Button mt="1em">Beli Saham</Button>
+          </Link>
         </Flex>
       </Flex>
     </PublicLayout>
   );
 }
+
+const Section2Box = ({
+  text,
+  imgUrl,
+  arrangement,
+}: {
+  text: string;
+  imgUrl: string;
+  arrangement: "left" | "right";
+}) => {
+  if (arrangement === "left") {
+    return (
+      <Grid
+        gridTemplateColumns={["4fr", "1fr"]}
+        gridTemplateRows={["1fr"]}
+        gap="1em"
+        alignItems="center"
+        w="min(60em, 100%)"
+      >
+        <GridItem>
+          <Slide from={"left"}>
+            <Text textAlign="justify" fontSize={["sm", "xl"]}>
+              {text}
+            </Text>
+          </Slide>
+        </GridItem>
+        <GridItem>
+          <Slide from={"right"}>
+            <Box h="10em" w="10em" bg="grey">
+              <Img src={imgUrl} h="15em" w="15em" />
+            </Box>
+          </Slide>
+        </GridItem>
+      </Grid>
+    );
+  }
+  return (
+    <Grid
+      templateColumns={["4fr", "1fr"]}
+      templateRows={["1fr"]}
+      gap="1em"
+      alignItems="center"
+      w="min(60em, 100%)"
+      column={2}
+      row={1}
+    >
+      <Slide from={"left"}>
+        <Box h="10em" w="10em" bg="grey">
+          <Img src={imgUrl} h="15em" w="15em" />
+        </Box>
+      </Slide>
+      <Slide from={"right"}>
+        <Text textAlign="justify" fontSize={["sm", "xl"]}>
+          {text}
+        </Text>
+      </Slide>
+    </Grid>
+  );
+};

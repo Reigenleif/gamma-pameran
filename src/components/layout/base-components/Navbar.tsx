@@ -32,21 +32,12 @@ export const Navbar = ({ type }: NavbarProps) => {
       <Text onClick={() => router.push("/")} cursor="pointer">
         Terakota Stock Exchange
       </Text>
-      <Flex ml="auto" gap={{ base: "3em", md: "4em" }} fontSize="sm">
+      <Flex ml="auto" gap={["1em", "2em"]} fontSize="sm" alignItems="center">
         {/* Webpage Buttons */}
         {type !== "admin" ? (
           <>
             <Link href="/products" className="navlink" prefetch={false}>
-              Produk Kami
-            </Link>
-            <Link href="#why" className="navlink" prefetch={false}>
-              Why Buy
-            </Link>
-            <Link href="#" className="navlink" prefetch={false}>
-              What Is
-            </Link>
-            <Link href="#" className="navlink" prefetch={false}>
-              How to Invest
+              Saham Kami
             </Link>
           </>
         ) : (
@@ -56,9 +47,7 @@ export const Navbar = ({ type }: NavbarProps) => {
         {/* Webpage Buttons */}
         {session ? (
           <Menu>
-            <MenuButton as={Button} variant="ghost">
-              {session.user.name}
-            </MenuButton>
+            <MenuButton as={Button}>Halo, {session.user.name}</MenuButton>
             <MenuList
               display="flex"
               gap="1em"
@@ -69,15 +58,11 @@ export const Navbar = ({ type }: NavbarProps) => {
               <Link href="/dashboard" className="navlink" prefetch={false}>
                 Dashboard
               </Link>
-              <Button variant="ghost" onClick={() => signOut()}>
-                Logout
-              </Button>
+              <Button onClick={() => signOut()}>Logout</Button>
             </MenuList>
           </Menu>
         ) : (
-          <Button variant="ghost" onClick={() => signIn()}>
-            Login
-          </Button>
+          <Button onClick={() => signIn()}>Login</Button>
         )}
       </Flex>
     </Flex>

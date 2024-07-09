@@ -15,6 +15,7 @@ import { getCsrfToken, signIn, useSession } from "next-auth/react";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { PasswordInput } from "~/utils/elements/PasswordInput";
+import { FcGoogle } from "react-icons/fc";
 
 interface SignInProps {
   csrfToken: string;
@@ -24,7 +25,7 @@ export const SignIn = ({ csrfToken }: SignInProps) => {
   const toaster = useToaster();
   const router = useRouter();
 
-  const {data: session} = useSession()
+  const { data: session } = useSession();
 
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -40,7 +41,8 @@ export const SignIn = ({ csrfToken }: SignInProps) => {
   const createUserMutation = api.user.createUser.useMutation();
 
   const credentialSignIn = (email: string, password: string) => {
-    toaster(signIn("credentials", { email, password, redirect: true, csrfToken })
+    toaster(
+      signIn("credentials", { email, password, redirect: true, csrfToken })
     );
   };
 
@@ -54,64 +56,82 @@ export const SignIn = ({ csrfToken }: SignInProps) => {
   };
 
   return (
-      <Flex justifyContent="center">
-        <Flex
-          flexDirection="column"
-          border="1px solid black"
-          borderRadius="10px"
-          p="1em"
-          w="min(30em,95%)"
-        >
-          <Text textAlign="center">Sign In</Text>
-          <form onSubmit={onSignIn}>
-            <FormControl>
-              <Input
-                mt="1em"
-                w="100%"
-                value={emailInput}
-                onChange={emailChangeHandler}
-                placeholder="Email"
-                id="EmailInput"
-              />
+    <Flex justifyContent="center" pt="2em">
+      <Flex
+        flexDirection="column"
+        border="1px solid black"
+        borderRadius="10px"
+        p="1em"
+        w="min(30em,95%)"
+      >
+        <Text textAlign="center">Masuk</Text>
+        <form onSubmit={onSignIn}>
+          <FormControl>
+            <Input
+              mt="1em"
+              w="100%"
+              value={emailInput}
+              onChange={emailChangeHandler}
+              placeholder="Email"
+              id="EmailInput"
+            />
 
-              <PasswordInput
-                mt="1em"
-                w="100%"
-                value={passwordInput}
-                type="password"
-                onChange={passwordChangeHandler}
-                placeholder="Password"
-              />
+            <PasswordInput
+              mt="1em"
+              w="100%"
+              value={passwordInput}
+              type="password"
+              onChange={passwordChangeHandler}
+              placeholder="Password"
+            />
 
-              <Flex w="100%" flexDir="column" mt="1em">
-                <Button type="submit" w="50%" m="auto">
-                  Sign In with Email
-                </Button>
-                <Button m="auto" mt="1em" w="50%" onClick={googleSignIn}>
-                  Sign In with Google
-                </Button>
-              </Flex>
-
+            <Flex w="100%" flexDir="column" mt="1em">
+              <Button type="submit" w="50%" m="auto">
+                Masuk dengan Email
+              </Button>
               <Flex pos="relative" p="10" alignItems="center">
                 <Divider color="black" />
                 <AbsoluteCenter
                   bg="white"
                   fontSize="xl"
-                  w="2em"
+                  w="4em"
                   textAlign="center"
                 >
-                  or
+                  atau
                 </AbsoluteCenter>
               </Flex>
-              <Flex w="100%">
-                <Button onClick={() => router.push("/signup")} w="50%" m="auto">
-                  Sign Up
-                </Button>
-              </Flex>
-            </FormControl>
-          </form>
-          {session ? <Text>Logged in as {session.user.email}</Text> : <Text>Not logged in</Text>}
-        </Flex>
+              <Button
+                m="auto"
+                mt="1em"
+                onClick={googleSignIn}
+                w="60%"
+                as={Flex}
+                gap="1em"
+                cursor="pointer"
+              >
+                <FcGoogle size="1.5em" /> Masuk dengan Google
+              </Button>
+            </Flex>
+
+            <Flex pos="relative" p="10" alignItems="center">
+              <Divider color="black" />
+              <AbsoluteCenter
+                bg="white"
+                fontSize="xl"
+                w="4em"
+                textAlign="center"
+              >
+                atau
+              </AbsoluteCenter>
+            </Flex>
+            <Flex w="100%">
+              <Button onClick={() => router.push("/signup")} w="50%" m="auto">
+                Buat Akun
+              </Button>
+            </Flex>
+          </FormControl>
+        </form>
       </Flex>
+    </Flex>
   );
 };

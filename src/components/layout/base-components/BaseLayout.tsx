@@ -30,7 +30,6 @@ export function BaseLayout({ children, type }: LayoutProps) {
         overflowX="hidden"
         bg="cream.300"
         minH="100dvh"
-        fontSize={isMobile ? "0.5rem" : "md"}
       >
         <Navbar type={type} />
         <Box minH="calc(100dvh - 7.5em)">{children}</Box>
