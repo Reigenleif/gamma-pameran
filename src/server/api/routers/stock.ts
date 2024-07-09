@@ -121,8 +121,8 @@ export const stockRouter = createTRPCRouter({
         skip: (input.page - 1) * input.pageSize,
         take: input.pageSize,
         include: {
-            StockSetting: true
-        }
+          StockSetting: true,
+        },
       });
     }),
   adminGetStockExchangeById: adminProcedure
@@ -175,6 +175,18 @@ export const stockRouter = createTRPCRouter({
   getStockSettingList: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.stockSetting.findMany();
   }),
+  getStockSettingByCode: publicProcedure
+    .input(z.object({ code: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const StockSetting = await ctx.prisma.stockSetting.findUnique({
+        where: {
+          code: input.code,
+        },
+        include: {
+          Product: true
+        }
+      });
+    }),
   getUserStockExchangeList: publicProcedure.query(async ({ ctx }) => {
     const session = ctx.session;
     if (!session) {

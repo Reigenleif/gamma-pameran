@@ -110,6 +110,7 @@ model StockSetting {
     maxStock    Int
 
     StockExchange StockExchange[]
+    Product       Product[]
 }
 
 enum StockExchangeConfirmationStatus {
@@ -123,7 +124,7 @@ model StockExchange {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    code           Int                          @unique @default(autoincrement())
+    code           Int                             @unique @default(autoincrement())
     buyerName      String
     quantity       Int
     price          Float
@@ -167,6 +168,9 @@ model Product {
     isAvailable Boolean  @default(true)
     Order       Order[]
     category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    stockSetting   StockSetting? @relation(fields: [stockSettingId], references: [id])
+    stockSettingId String?
 }
 
 model Order {
