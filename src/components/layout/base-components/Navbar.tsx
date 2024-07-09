@@ -32,11 +32,11 @@ export const Navbar = ({ type }: NavbarProps) => {
       <Text onClick={() => router.push("/")} cursor="pointer">
         Terakota Stock Exchange
       </Text>
-      <Flex ml="auto" gap={["1em", "2em"]} fontSize="sm" alignItems="center">
+      <Flex ml="auto" gap={["1em", "2em"]} fontSize="0.8em" alignItems="center">
         {/* Webpage Buttons */}
         {type !== "admin" ? (
           <>
-            <Link href="/products" className="navlink" prefetch={false}>
+            <Link href="/saham" className="navlink" prefetch={false}>
               Saham Kami
             </Link>
           </>
