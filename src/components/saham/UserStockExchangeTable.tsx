@@ -9,7 +9,7 @@ export const UserStockExchangeTable = () => {
   return (
     <>
       {userStockExchangeList.length > 0 ? (
-        <Table>
+        <Table fontSize="sm">
           <Tr fontWeight="bold">
             <Td>Atas Nama</Td>
             <Td>Jumlah (Lembar)</Td>

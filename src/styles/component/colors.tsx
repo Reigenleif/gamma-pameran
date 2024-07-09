@@ -57,7 +57,7 @@ const purple = {
 // MAIN COLORS //
 
 const cream = {
-  100: "a4836a",
+  100: "#a4836a",
   200: "#d4c3aa",
   300: "#ece3d4"
 }

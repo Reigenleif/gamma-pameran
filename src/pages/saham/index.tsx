@@ -1,32 +1,33 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { PublicLayout } from "~/components/layout/PublicLayout";
-import { withSession } from "~/server/auth/withSession";
+import { StockCard } from "~/components/saham/StockCard";
 import { api } from "~/utils/api";
-import { Table, Td, Tr } from "@chakra-ui/react";
-import { BtnBuyStock } from "~/components/saham/BtnBuyStock";
-import { UserStockExchangeTable } from "~/components/saham/UserStockExchangeTable";
-
-export const getServerSideProps = withSession({ force: true });
 
 export default function SahamPage() {
+  const router = useRouter();
+
+  const getStockSettingListQuery = api.stock.getStockSettingList.useQuery();
+  const stockSettingList = getStockSettingListQuery.data ?? [];
+
   return (
     <PublicLayout>
-      <SahamPageComponent />
+      <Flex flexDir="column" py="3em">
+        <Flex px="3em" w="100%">
+          <Text fontWeight="bold" fontSize="3xl">
+            Telusuri Saham Terakota
+          </Text>
+        </Flex>
+        <Flex bg="cream.100" w="100%" p="2em" gap="2em">
+          {stockSettingList.map((stock) => (
+            <StockCard
+              key={stock.id}
+              stock={stock}
+              onClick={() => router.push(`/beli-saham`)}
+            />
+          ))}
+        </Flex>
+      </Flex>
     </PublicLayout>
   );
 }
-
-const SahamPageComponent = () => {
-  return (
-    <Flex flexDir="column" gap="1em" ml="1em">
-      <Text fontWeight="bold" fontSize="3xl">
-        Saham Terakota
-      </Text>
-      <BtnBuyStock />
-      <Text fontWeight="bold" fontSize="2xl">
-        Daftar Kepemilikan Saham Anda :
-      </Text>
-      <UserStockExchangeTable />
-    </Flex>
-  );
-};

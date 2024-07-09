@@ -97,7 +97,7 @@ export default function Home() {
             justifyContent="center"
             w="100%"
           >
-            <Flex flexDir="column" w="min(100em, 90%)" gap="3rem">
+            <Flex flexDir="column" w="min(100em, 100%)" gap="3rem">
               <Text fontSize="4xl" fontWeight="bold" fontStyle="h" w="100%">
                 Why does Terakota Stock Exhange need to be implemented?
               </Text>
@@ -217,11 +217,11 @@ const Section2Box = ({
   if (arrangement === "left") {
     return (
       <Grid
-        gridTemplateColumns={["4fr", "1fr"]}
-        gridTemplateRows={["1fr"]}
+        gridTemplateColumns="4fr 1fr"
+        gridTemplateRows="1fr"
         gap="1em"
         alignItems="center"
-        w="min(60em, 100%)"
+        w="100%"
       >
         <GridItem>
           <Slide from={"left"}>
@@ -242,17 +242,17 @@ const Section2Box = ({
   }
   return (
     <Grid
-      templateColumns={["4fr", "1fr"]}
-      templateRows={["1fr"]}
+      templateColumns="1fr 4fr"
+      templateRows="1fr"
       gap="1em"
       alignItems="center"
-      w="min(60em, 100%)"
+      w="100%"
       column={2}
       row={1}
     >
       <Slide from={"left"}>
         <Box h="10em" w="10em" bg="grey">
-          <Img src={imgUrl} h="15em" w="15em" />
+          <Img src={imgUrl} w="100%" />
         </Box>
       </Slide>
       <Slide from={"right"}>
