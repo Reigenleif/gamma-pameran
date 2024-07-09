@@ -17,6 +17,7 @@ export const storageRouter = createTRPCRouter({
         folder: z.union([
           z.literal(FolderEnum.PROFILE),
           z.literal(FolderEnum.DOCUMENT),
+          z.literal(FolderEnum.PAYMENT_PROOF)
         ]),
         filename: z.string()
       })
@@ -50,6 +51,7 @@ export const storageRouter = createTRPCRouter({
         folder: z.union([
           z.literal(FolderEnum.PROFILE),
           z.literal(FolderEnum.DOCUMENT),
+          z.literal(FolderEnum.PAYMENT_PROOF)
         ]),
         filename: z.string(),
         contentType: z.union([
