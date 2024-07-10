@@ -1,10 +1,11 @@
 import { extendTheme } from "@chakra-ui/react";
-import { colors } from "./component/colors";
+import { colors } from "./colors";
 import { Button } from "./component/button";
 import { Input } from "./component/input";
 import { Table } from "./component/table";
 import { Textarea } from "./component/textarea";
 import { breakpoints } from "./breakpoints";
+import { Td } from "./component/td";
 
 const theme = extendTheme({
   fonts: {
@@ -30,6 +31,7 @@ const theme = extendTheme({
     Input,
     Table,
     Textarea,
+    Td,
   },
   breakpoints: breakpoints,
 });

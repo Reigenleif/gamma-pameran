@@ -1,41 +1,65 @@
-import type { SystemStyleFunction } from '@chakra-ui/theme-tools';
-import { type ComponentStyleConfig } from '@chakra-ui/react';
+import type { SystemStyleFunction } from "@chakra-ui/theme-tools";
+import { type ComponentStyleConfig } from "@chakra-ui/react";
 
 const blackTableStyle: SystemStyleFunction = () => {
   return {
     table: {
-      width: '100%',
-      borderCollapse: 'collapse',
+      width: "100%",
+      borderCollapse: "collapse",
+      borderRadius: "10px",
+      tr: {
+        td: {
+          padding: "0",
+          h: "1.2em",
+        },
+      },
       thead: {
-        bg: 'black',
-        color: 'white',
-        border: '1px solid',
-        borderColor: 'gray.400',
+        borderRadius: "10px",
+        bg: "black",
+        color: "white",
+        border: "1px solid",
+        borderColor: "gray.400",
         th: {
-          textAlign: 'center'
-        }
+          textAlign: "center",
+        },
       },
       tbody: {
         tr: {
           td: {
-            textAlign: 'center',
-            padding: '0.5rem',
-            border: '1px solid',
+            textAlign: "center",
+            padding: "0.5rem",
+            border: "1px solid",
 
-            borderColor: 'gray.400',
-            color: 'black'
-          }
-        }
-      }
-    }
+            borderColor: "gray.400",
+            color: "black",
+          },
+        },
+      },
+    },
+  };
+};
+
+const defaultTableStyle: SystemStyleFunction = () => {
+  return {
+    table: {
+      width: "100%",
+      borderCollapse: "collapse",
+      tr: {
+        td: {
+          padding: "0",
+          h: "2em",
+        },
+      },
+    },
   };
 };
 
 export const Table: ComponentStyleConfig = {
   variants: {
-    black: blackTableStyle
+    black: blackTableStyle,
+    default: defaultTableStyle,
   },
   defaultProps: {
-    variant: 'default'
-  }
+    variant: "default",
+  },
 };

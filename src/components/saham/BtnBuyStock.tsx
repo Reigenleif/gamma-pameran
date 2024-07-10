@@ -17,21 +17,29 @@ import { z } from "zod";
 import { api } from "~/utils/api";
 import { StringInput } from "../form/StringInput";
 import { FileInput } from "../form/FileInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToaster } from "~/utils/hooks/useToaster";
+import { getRemStockSetting } from "~/utils/function/stockLocal";
+import { useSession } from "next-auth/react";
+import { AllowableFileTypeEnum, FolderEnum } from "~/utils/file";
+import { useUploader } from "~/utils/hooks/useUploader";
 
 const buyStockSchema = z.object({
   stockSettingId: z.string(),
   quantity: z.number(),
   buyerName: z.string(),
+  buyerAddress: z.string().optional(),
   imageUrl: z.string().optional(),
 });
 
 type BuyStockFields = z.infer<typeof buyStockSchema>;
 
-export const BtnBuyStock= () => {
+export const BtnBuyStock = () => {
   const toaster = useToaster();
-  const { register, formState, handleSubmit, reset, getValues } =
+  const { data: session } = useSession();
+  const uploader = useUploader();
+
+  const { register, formState, handleSubmit, reset, getValues, setValue } =
     useForm<BuyStockFields>({
       resolver: zodResolver(buyStockSchema),
     });
@@ -40,17 +48,47 @@ export const BtnBuyStock= () => {
 
   const getStockSettingList = api.stock.getStockSettingList.useQuery();
   const createStockExchange = api.stock.createStockExchange.useMutation();
+  const updateStockExchange = api.stock.updateStockExchange.useMutation();
 
   const { onOpen, isOpen, onClose } = useDisclosure();
 
   const displayStockExchangeCreator = () => {
     onOpen();
-  }
+  };
 
   const onSubmit = handleSubmit(async (data: BuyStockFields) => {
-    toaster(createStockExchange.mutateAsync(data));
+    const newData = await createStockExchange.mutateAsync(data);
+
+    const file = fileStateArr[0];
+    if (file) {
+      const img = await uploader.uploader(
+        newData.id,
+        FolderEnum.PAYMENT_PROOF,
+        file.name?.split(".").pop() as AllowableFileTypeEnum ?? AllowableFileTypeEnum.PNG,
+        file
+      );
+      newData.imageUrl = img?.url ?? "";
+
+      toaster(updateStockExchange.mutateAsync({
+        ...newData
+      }));
+    }
+
+    
     reset();
     onClose();
+  });
+
+  useEffect(() => {
+    setValue("buyerAddress", session?.user.address ?? "");
+
+    const initialStockId = getRemStockSetting();
+    if (!initialStockId) {
+      return;
+    }
+
+    setValue("stockSettingId", initialStockId);
+    displayStockExchangeCreator();
   });
 
   return (
@@ -60,7 +98,7 @@ export const BtnBuyStock= () => {
         mx={{ base: "auto", lg: "1em" }}
         onClick={onOpen}
       >
-        Beli Saham
+        Beli Sekarang
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -69,7 +107,7 @@ export const BtnBuyStock= () => {
           <ModalCloseButton />
           <ModalBody>
             <Text color="cream.100" fontWeight="bold" fontSize="xl">
-              Jenis Saham
+              Jenis Saham*
             </Text>
             <Select {...register("stockSettingId")}>
               {getStockSettingList.data?.map((stockSetting) => (
@@ -78,27 +116,40 @@ export const BtnBuyStock= () => {
                   value={stockSetting.id}
                 >{`${stockSetting.name} (${stockSetting.code})`}</option>
               ))}
-  
             </Select>
             <StringInput
-              title={"Jumlah Saham"}
+              title={"Jumlah Saham*"}
               field="quantity"
               register={register}
               error={formState.errors.quantity}
               type="number"
             />
             <StringInput
-              title={"Nama Pembeli"}
+              title={"Nama Pembeli*"}
               field="buyerName"
               register={register}
               error={formState.errors.buyerName}
             />
-            <FileInput fileStateArr={fileStateArr} />
+            <StringInput
+              title={"Alamat Pembeli*"}
+              field="buyerAddress"
+              register={register}
+              error={formState.errors.buyerAddress}
+            />
+            <Text color="cream.100" fontWeight="bold" fontSize="xl">
+              Bukti Pembayaran
+            </Text>
+            <FileInput
+              fileStateArr={fileStateArr}
+              allowed={[
+                AllowableFileTypeEnum.JPEG,
+                AllowableFileTypeEnum.PDF,
+                AllowableFileTypeEnum.PICTURES,
+              ]}
+            />
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onSubmit}>
-                Beli Saham
-            </Button>
+            <Button onClick={onSubmit}>Beli Sekarang</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

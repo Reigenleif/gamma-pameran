@@ -37,7 +37,7 @@ export const Navbar = ({ type }: NavbarProps) => {
         {type !== "admin" ? (
           <>
             <Link href="/saham" className="navlink" prefetch={false}>
-              Saham Kami
+              Seri Saham
             </Link>
           </>
         ) : (
@@ -54,10 +54,14 @@ export const Navbar = ({ type }: NavbarProps) => {
               p="1em"
               flexDir="column"
               alignItems="center"
+              pos="relative"
+              zIndex="100"
             >
-              <Link href="/dashboard" className="navlink" prefetch={false}>
-                Dashboard
-              </Link>
+              {session.user.role === "ADMIN" && (
+                <Link href="/dashboard" className="navlink" prefetch={false}>
+                  Dashboard
+                </Link>
+              )}
               <Button onClick={() => signOut()}>Logout</Button>
             </MenuList>
           </Menu>

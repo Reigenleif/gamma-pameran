@@ -86,7 +86,7 @@ export const SignIn = ({ csrfToken }: SignInProps) => {
             />
 
             <Flex w="100%" flexDir="column" mt="1em">
-              <Button type="submit" w="50%" m="auto">
+              <Button type="submit" w="60%" m="auto">
                 Masuk dengan Email
               </Button>
               <Flex pos="relative" p="10" alignItems="center">
@@ -125,8 +125,8 @@ export const SignIn = ({ csrfToken }: SignInProps) => {
               </AbsoluteCenter>
             </Flex>
             <Flex w="100%">
-              <Button onClick={() => router.push("/signup")} w="50%" m="auto">
-                Buat Akun
+              <Button onClick={() => router.push("/signup")} w="60%" m="auto">
+                Daftar di sini
               </Button>
             </Flex>
           </FormControl>

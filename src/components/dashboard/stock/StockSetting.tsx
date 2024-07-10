@@ -87,10 +87,10 @@ export const StockSettingComponent = () => {
 
   return (
     <>
-      <Text fontSize="2xl" fontWeight="bold">
+      <Text fontSize="xl" fontWeight="bold">
         Pengaturan Saham
       </Text>
-      <TableContainer>
+      <TableContainer fontSize="md">
         <Table>
           <Tr fontWeight="bold">
             <Td>No</Td>

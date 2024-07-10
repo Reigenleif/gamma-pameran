@@ -1,5 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
+import { get } from "http";
 import { useRouter } from "next/router";
+import { Loading } from "~/components/common/Loading";
 import { PublicLayout } from "~/components/layout/PublicLayout";
 import { StockCard } from "~/components/saham/StockCard";
 import { api } from "~/utils/api";
@@ -19,13 +21,17 @@ export default function SahamPage() {
           </Text>
         </Flex>
         <Flex bg="cream.100" w="100%" p="2em" gap="2em">
-          {stockSettingList.map((stock) => (
-            <StockCard
-              key={stock.id}
-              stock={stock}
-              onClick={() => router.push(`/beli-saham`)}
-            />
-          ))}
+          {getStockSettingListQuery.isLoading ? (
+            <Loading />
+          ) : (
+            stockSettingList.map((stock) => (
+              <StockCard
+                key={stock.id}
+                stock={stock}
+                onClick={() => router.push(`/saham/${stock.code}`)}
+              />
+            ))
+          )}
         </Flex>
       </Flex>
     </PublicLayout>

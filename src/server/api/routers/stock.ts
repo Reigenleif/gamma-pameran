@@ -183,9 +183,15 @@ export const stockRouter = createTRPCRouter({
           code: input.code,
         },
         include: {
-          Product: true
-        }
+          Product: true,
+        },
       });
+
+      if (!StockSetting) {
+        throw new Error("Saham Tidak Ditemukan");
+      }
+
+      return StockSetting;
     }),
   getUserStockExchangeList: publicProcedure.query(async ({ ctx }) => {
     const session = ctx.session;

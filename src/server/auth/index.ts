@@ -26,6 +26,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       role: UserRole;
+      address: string;
     };
   }
 

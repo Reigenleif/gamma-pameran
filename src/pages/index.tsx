@@ -8,7 +8,7 @@ import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
 import { BsGraphUpArrow } from "react-icons/bs";
 import { MdGroups2 } from "react-icons/md";
-import { colors } from "~/styles/component/colors";
+import { colors } from "~/styles/colors";
 import { TbMoneybag } from "react-icons/tb";
 import { Slide, StaggeredSlide } from "~/utils/animation/entrance-animation";
 import { useMemo } from "react";
@@ -34,32 +34,39 @@ export default function Home() {
         minH="100dvh"
       >
         {/* Section 1 */}
+        <Img src="/stock.webp" w="100%" h="15em" objectFit="cover" objectPosition="100% 20%"/>
         <Flex
           flexDir={["column", "row"]}
           alignItems={["center", "none"]}
           justifyContent="center"
           gap="5em"
           mt="2em"
-          py="10em"
+          pb="10em"
+          pt="2em"
           px="5%"
         >
-          <Flex flexDir="column" gap="3em" w="min(55em, 100%)">
+          <Flex flexDir="column" gap="3em" w="min(75em, 100%)">
             <Slide from="left">
               <Text fontSize="3xl" fontWeight="bold" fontStyle="h">
-                What is Terakota Stock Exchange?
+                Terrakota Stock Exchange - Pasar Saham Terrakota
               </Text>
               <Text fontSize="2xl" textAlign="justify">
-                Pasar Saham Terakota merupakan program yang diprakarsai oleh
-                Koperasi Tanaraya Jalan Kebudayaan bersama dengan Jatiwangi Art
-                Factory untuk menghimpun Dana Abadi Kebudayaan melalui skema
-                transaksi jual-beli saham ekosistem terafiliasi Koperasi
-                Tanaraya Jalan Kebudayaan. Program ini diinisiasi dengan tujuan
-                berikut.
+                Pasar Saham Terrakota menjadi media untuk menghimpun Dana Abadi
+                Wilayah bagi inisiatif-inisiatif kolektif dalam rangka
+                mengembangkan Kawasan Pemajuan Kebudayaan Terrakota. Pasar Saham
+                Terrakota merupakan respon terhadap perkembangan ekonomi wilayah
+                yang kontribusinya kurang signifikan dan pertumbuhannya kurang
+                cepat. Karya ini menjadi inisiatif awal dalam menjawab bagaimana
+                membangun sebuah wilayah secara kolektif. Inisiatif-inisiatif
+                kolektif tersebut dikurasi dalam koridor ekonomi kebudayaan dan
+                dievaluasi secara teknis yang kemudian kita hadirkan dalam
+                bentuk saham. Siapapun dapat ikut memiliki saham Terrakota yang
+                akan diputar melalui berbagai model ekonomi kultural.
               </Text>
             </Slide>
           </Flex>
 
-          <Flex flexDir="column" gap="2em" w={["100%", "30em"]}>
+          {/* <Flex flexDir="column" gap="2em" w={["100%", "30em"]}>
             <StaggeredSlide from="right" duration={0.5}>
               <Flex alignItems="center" gap="1em">
                 <Box w="10em">
@@ -87,7 +94,7 @@ export default function Home() {
                 </Flex>
               </Flex>
             </StaggeredSlide>
-          </Flex>
+          </Flex> */}
         </Flex>
 
         {/* Section 2 */}
@@ -97,9 +104,14 @@ export default function Home() {
             justifyContent="center"
             w="100%"
           >
-            <Flex flexDir="column" w="min(100em, 100%)" gap="3rem">
+            <Flex
+              flexDir="column"
+              w="min(100em, 100%)"
+              gap="3rem"
+              color="white"
+            >
               <Text fontSize="4xl" fontWeight="bold" fontStyle="h" w="100%">
-                Why does Terakota Stock Exhange need to be implemented?
+                Mengapa Saham Terrakota Perlu Diimplementasikan?
               </Text>
               <Section2Box
                 text="Hadirnya Pasar Saham Terakota (Terakota Stock Exchange)
@@ -172,10 +184,16 @@ export default function Home() {
           justifyContent="center"
           gap="5em"
           mt="2em"
-          py="2em"
+          pt="2em"
           px="5%"
         >
-          <Text fontSize="4xl" fontWeight="bold" fontStyle="h" w="100%" textAlign="center">
+          <Text
+            fontSize="4xl"
+            fontWeight="bold"
+            fontStyle="h"
+            w="100%"
+            textAlign="center"
+          >
             Peta Majalengka
           </Text>
           <ProductMap productList={[]} />
@@ -217,7 +235,7 @@ const Section2Box = ({
   if (arrangement === "left") {
     return (
       <Grid
-        gridTemplateColumns="4fr 1fr"
+        gridTemplateColumns="3fr 1fr"
         gridTemplateRows="1fr"
         gap="1em"
         alignItems="center"
@@ -230,10 +248,10 @@ const Section2Box = ({
             </Text>
           </Slide>
         </GridItem>
-        <GridItem>
+        <GridItem display="flex" justifyContent="center">
           <Slide from={"right"}>
-            <Box h="10em" w="10em" bg="grey">
-              <Img src={imgUrl} h="15em" w="15em" />
+            <Box h="15em" w="15em" bg="grey">
+              <Img src={imgUrl} w="100%" />
             </Box>
           </Slide>
         </GridItem>
@@ -242,7 +260,7 @@ const Section2Box = ({
   }
   return (
     <Grid
-      templateColumns="1fr 4fr"
+      templateColumns="1fr 3fr"
       templateRows="1fr"
       gap="1em"
       alignItems="center"
@@ -250,16 +268,20 @@ const Section2Box = ({
       column={2}
       row={1}
     >
-      <Slide from={"left"}>
-        <Box h="10em" w="10em" bg="grey">
-          <Img src={imgUrl} w="100%" />
-        </Box>
-      </Slide>
-      <Slide from={"right"}>
-        <Text textAlign="justify" fontSize={["sm", "xl"]}>
-          {text}
-        </Text>
-      </Slide>
+      <GridItem display="flex" justifyContent="center">
+        <Slide from={"left"}>
+          <Box h="15em" w="15em" bg="grey">
+            <Img src={imgUrl} w="100%" />
+          </Box>
+        </Slide>
+      </GridItem>
+      <GridItem>
+        <Slide from={"right"}>
+          <Text textAlign="justify" fontSize={["sm", "xl"]}>
+            {text}
+          </Text>
+        </Slide>
+      </GridItem>
     </Grid>
   );
 };

@@ -16,6 +16,7 @@ export const SignUp = ({ csrfToken }: SignUpProps) => {
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
+  const [addressInput, setAddressInput] = useState("");
 
   const emailChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailInput(e.target.value);
@@ -33,6 +34,10 @@ export const SignUp = ({ csrfToken }: SignUpProps) => {
 
   const nameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNameInput(e.target.value);
+  };
+
+  const addressChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddressInput(e.target.value);
   };
 
   const createUserMutation = api.user.createUser.useMutation();
@@ -102,6 +107,16 @@ export const SignUp = ({ csrfToken }: SignUpProps) => {
       });
       return;
     }
+
+    if (addressInput === "") {
+      toast({
+        title: "Alamat Tidak Boleh Kosong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
     credentialSignUp(emailInput, passwordInput);
   };
 
@@ -129,6 +144,17 @@ export const SignUp = ({ csrfToken }: SignUpProps) => {
           onChange={emailChangeHandler}
           placeholder="Email"
         />
+        <Input
+          mt="1em"
+          w="100%"
+          type="text"
+          h="xl"
+          overflowWrap="anywhere"
+          value={addressInput}
+          onChange={addressChangeHandler}
+          placeholder="Alamat Lengkap"
+        />
+
         <PasswordInput
           mt="1em"
           w="100%"

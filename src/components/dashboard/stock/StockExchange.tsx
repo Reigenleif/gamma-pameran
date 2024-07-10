@@ -6,8 +6,10 @@ import {
   ModalCloseButton,
   Table,
   TableContainer,
+  Tbody,
   Td,
   Text,
+  Thead,
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -110,43 +112,47 @@ export const StockExchangeComponent = () => {
       </Text>
       <TableContainer>
         <Table>
-          <Tr fontWeight="bold">
-            <Td> No. </Td>
-            <Td>Jenis Saham</Td>
-            <Td> Nama Pembeli </Td>
-            <Td> Harga Saat Beli (Rp)</Td>
-            <Td> Jumlah </Td>
-            <Td> Bukti Pembayaran</Td>
-            <Td> Status </Td>
-            <Td> Edit</Td>
-          </Tr>
-          {stockExchangeList?.map((stockExchange, index) => (
-            <Tr key={stockExchange.id}>
-              <Td>{(page - 1) * pageSize + index + 1}</Td>
-              <Td>{stockExchange.StockSetting?.code ?? "-"}</Td>
-              <Td>{stockExchange.buyerName}</Td>
-              <Td>{stockExchange.price}</Td>
-              <Td>{stockExchange.quantity}</Td>
-              <Td>
-                <Button>
-                  <a href={stockExchange.imageUrl ?? ""} target="_blank">
-                    <FaEye size="2em" />
-                  </a>
-                </Button>
-              </Td>
-              <Td>
-                <BtnStatus
-                  status={
-                    stockExchange.status as StockExchangeConfirmationStatus
-                  }
-                  stockExchangeId={stockExchange.id}
-                  onUpdateStatus={onUpdateStatus}
-                />
-              </Td>
-              <Td>
-                <MdEdit onClick={stockExchangeDisclosure.onOpen} />
-              </Td>
+          <Thead>
+            <Tr fontWeight="bold">
+              <Td> No. </Td>
+              <Td>Jenis Saham</Td>
+              <Td> Nama Pembeli </Td>
+              <Td> Harga Saat Beli (Rp)</Td>
+              <Td> Jumlah </Td>
+              <Td> Bukti Pembayaran</Td>
+              <Td> Status </Td>
+              <Td> Edit</Td>
             </Tr>
+          </Thead>
+          {stockExchangeList?.map((stockExchange, index) => (
+            <Tbody key={stockExchange.id}>
+              <Tr>
+                <Td>{(page - 1) * pageSize + index + 1}</Td>
+                <Td>{stockExchange.StockSetting?.code ?? "-"}</Td>
+                <Td>{stockExchange.buyerName}</Td>
+                <Td>{stockExchange.price}</Td>
+                <Td>{stockExchange.quantity}</Td>
+                <Td>
+                  <Button>
+                    <a href={stockExchange.imageUrl ?? ""} target="_blank">
+                      <FaEye size="2em" />
+                    </a>
+                  </Button>
+                </Td>
+                <Td>
+                  <BtnStatus
+                    status={
+                      stockExchange.status as StockExchangeConfirmationStatus
+                    }
+                    stockExchangeId={stockExchange.id}
+                    onUpdateStatus={onUpdateStatus}
+                  />
+                </Td>
+                <Td>
+                  <MdEdit onClick={stockExchangeDisclosure.onOpen} />
+                </Td>
+              </Tr>
+            </Tbody>
           ))}
         </Table>
       </TableContainer>
@@ -240,4 +246,4 @@ const BtnDeleteStockExchange = ({
       Delete
     </Button>
   );
-}
+};
