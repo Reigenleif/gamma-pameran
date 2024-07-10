@@ -173,7 +173,23 @@ export const stockRouter = createTRPCRouter({
       });
     }),
   getStockSettingList: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.stockSetting.findMany();
+    const stockSettingList = await ctx.prisma.stockSetting.findMany({});
+    const stockExchangeQuantitySum = await ctx.prisma.stockExchange.groupBy({
+      by: ["stockSettingId"],
+      _sum: {
+        quantity: true,
+      },
+    });
+    const returnedStockSettingList = stockSettingList.map((stockSetting) => {
+      const stockExchangeSum = stockExchangeQuantitySum.find(
+        (stockExchange) => stockExchange.stockSettingId === stockSetting.id
+      );
+      return {
+        ...stockSetting,
+        stockExchangeSum: stockExchangeSum?._sum.quantity ?? 0,
+      };
+    });
+    return returnedStockSettingList;
   }),
   getStockSettingByCode: publicProcedure
     .input(z.object({ code: z.string() }))
