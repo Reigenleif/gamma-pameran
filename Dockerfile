@@ -13,8 +13,7 @@ COPY prisma ./
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml\* ./
 
 # Copy Google Secret Credentials
-
-COPY secret ./
+# COPY secret ./
 
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
