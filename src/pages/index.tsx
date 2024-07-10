@@ -34,7 +34,9 @@ export default function Home() {
         minH="100dvh"
       >
         {/* Section 1 */}
-        <Img src="/stock.webp" w="100%" h="15em" objectFit="cover" objectPosition="100% 20%"/>
+        <Slide from="top">
+          <Img src="/first-png.webp" w="100%" />
+        </Slide>
         <Flex
           flexDir={["column", "row"]}
           alignItems={["center", "none"]}
