@@ -1,5 +1,6 @@
 import {
   Button,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -50,6 +51,8 @@ export const BtnBuyStock = () => {
   const createStockExchange = api.stock.createStockExchange.useMutation();
   const updateStockExchange = api.stock.updateStockExchange.useMutation();
 
+  const stockSettingList = getStockSettingList.data ?? [];
+
   const { onOpen, isOpen, onClose } = useDisclosure();
 
   const displayStockExchangeCreator = () => {
@@ -64,17 +67,19 @@ export const BtnBuyStock = () => {
       const img = await uploader.uploader(
         newData.id,
         FolderEnum.PAYMENT_PROOF,
-        file.name?.split(".").pop() as AllowableFileTypeEnum ?? AllowableFileTypeEnum.PNG,
+        (file.name?.split(".").pop() as AllowableFileTypeEnum) ??
+          AllowableFileTypeEnum.PNG,
         file
       );
       newData.imageUrl = img?.url ?? "";
 
-      toaster(updateStockExchange.mutateAsync({
-        ...newData
-      }));
+      toaster(
+        updateStockExchange.mutateAsync({
+          ...newData,
+        })
+      );
     }
 
-    
     reset();
     onClose();
   });
@@ -91,6 +96,16 @@ export const BtnBuyStock = () => {
     displayStockExchangeCreator();
   });
 
+  const selectedStockSettting = stockSettingList.find(
+    (stockSetting) => stockSetting.id === getValues("stockSettingId")
+  ) ?? {
+    maxStock: 0,
+    stockExchangeSum: 0,
+  };
+
+  const remainingStockQuantity = selectedStockSettting
+    ? selectedStockSettting.maxStock - selectedStockSettting.stockExchangeSum
+    : null;
   return (
     <>
       <Button
@@ -117,13 +132,27 @@ export const BtnBuyStock = () => {
                 >{`${stockSetting.name} (${stockSetting.code})`}</option>
               ))}
             </Select>
-            <StringInput
-              title={"Jumlah Saham*"}
-              field="quantity"
-              register={register}
-              error={formState.errors.quantity}
-              type="number"
-            />
+
+            <Flex
+              color="white"
+              bg="cream.300"
+              w="calc(100% + 3em)"
+              flexDir="column"
+              mx="-1.5em"
+              borderRadius="10px"
+            >
+              <StringInput
+                title={"Jumlah Saham*"}
+                field="quantity"
+                register={register}
+                error={formState.errors.quantity}
+                type="number"
+              />
+              <Text fontSize="md">
+                Lembar Tersisa : {remainingStockQuantity ?? "Loading..."}
+              </Text>
+              <Text>Jumlah yang harus dibayar : Rp. </Text>
+            </Flex>
             <StringInput
               title={"Nama Pembeli*"}
               field="buyerName"

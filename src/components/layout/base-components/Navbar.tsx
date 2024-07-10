@@ -57,9 +57,13 @@ export const Navbar = ({ type }: NavbarProps) => {
               pos="relative"
               zIndex="100"
             >
-              {session.user.role === "ADMIN" && (
+              {session.user.role === "ADMIN" ? (
                 <Link href="/dashboard" className="navlink" prefetch={false}>
                   Dashboard
+                </Link>
+              ) : (
+                <Link href="/beli-saham" className="navlink" prefetch={false}>
+                  Lihat Saham
                 </Link>
               )}
               <Button onClick={() => signOut()}>Logout</Button>
