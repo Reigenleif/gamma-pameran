@@ -5,7 +5,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export const userRouter = createTRPCRouter({
   createUser: publicProcedure.input(z.object({

@@ -27,7 +27,7 @@ const blackTableStyle: SystemStyleFunction = () => {
         tr: {
           td: {
             textAlign: "center",
-            padding: "0.5rem",
+            padding: "1rem",
             border: "1px solid",
 
             borderColor: "gray.400",
@@ -46,7 +46,7 @@ const defaultTableStyle: SystemStyleFunction = () => {
       borderCollapse: "collapse",
       tr: {
         td: {
-          padding: "0",
+          padding: "0.5rem",
           h: "2em",
         },
       },

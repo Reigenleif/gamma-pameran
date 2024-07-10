@@ -14,7 +14,7 @@ export const Footer = () => {
       justifyContent="space-between"
     >
       <Text fontSize="md">
-        &copy;2024 Jatiwangi Art Festival. All rights reserved.
+        &copy;2024 Pasar Saham Terrakota. All rights reserved.
       </Text>
       <Text fontSize="md">
         By Gamma Metrics

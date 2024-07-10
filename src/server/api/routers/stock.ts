@@ -226,6 +226,7 @@ export const stockRouter = createTRPCRouter({
         stockSettingId: z.string(),
         quantity: z.number(),
         imageUrl: z.string().optional(),
+        buyerName: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -250,9 +251,10 @@ export const stockRouter = createTRPCRouter({
           stockSettingId: input.stockSettingId,
           quantity: input.quantity,
           price: stockSetting.price,
-          buyerName: session.user.name ?? "",
+          buyerName: input.buyerName === "" ? input.buyerName : session.user.name ?? ""  ,
           status: StockExchangeConfirmationStatus.PENDING,
           timeOccured: new Date(),
+          imageUrl: input.imageUrl,
         },
       });
     }),
@@ -262,6 +264,8 @@ export const stockRouter = createTRPCRouter({
         id: z.string().optional(),
         quantity: z.number().optional(),
         price: z.number().optional(),
+        imageUrl: z.string().optional(),
+        buyerName: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -291,6 +295,8 @@ export const stockRouter = createTRPCRouter({
         data: {
           quantity: input.quantity,
           price: input.price,
+          imageUrl: input.imageUrl,
+          buyerName: input.buyerName,
         },
       });
     }),

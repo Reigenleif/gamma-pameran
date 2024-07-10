@@ -6,7 +6,7 @@ import {
   type DefaultSession,
   DefaultUser,
 } from "next-auth";
-import { compare } from "bcrypt";
+import { compare } from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { env } from "~/env.mjs";
