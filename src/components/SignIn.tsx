@@ -89,7 +89,7 @@ export const SignIn = ({ csrfToken }: SignInProps) => {
               <Button type="submit" w="60%" m="auto">
                 Masuk dengan Email
               </Button>
-              <Flex pos="relative" p="10" alignItems="center">
+              {/* <Flex pos="relative" p="10" alignItems="center">
                 <Divider color="black" />
                 <AbsoluteCenter
                   bg="white"
@@ -110,10 +110,10 @@ export const SignIn = ({ csrfToken }: SignInProps) => {
                 cursor="pointer"
               >
                 <FcGoogle size="1.5em" /> Masuk dengan Google
-              </Button>
+              </Button> */}
             </Flex>
 
-            <Flex pos="relative" p="10" alignItems="center">
+            {/* <Flex pos="relative" p="10" alignItems="center">
               <Divider color="black" />
               <AbsoluteCenter
                 bg="white"
@@ -128,7 +128,7 @@ export const SignIn = ({ csrfToken }: SignInProps) => {
               <Button onClick={() => router.push("/signup")} w="60%" m="auto">
                 Daftar di sini
               </Button>
-            </Flex>
+            </Flex> */}
           </FormControl>
         </form>
       </Flex>

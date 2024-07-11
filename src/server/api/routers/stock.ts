@@ -6,6 +6,11 @@ export const stockRouter = createTRPCRouter({
   adminGetStockSettingList: adminProcedure.query(async ({ ctx }) => {
     const stockSettingList = await ctx.prisma.stockSetting.findMany();
     const stockExchangeQuantitySum = await ctx.prisma.stockExchange.groupBy({
+      where: {
+        NOT: {
+          status: StockExchangeConfirmationStatus.REJECTED,
+        },
+      },
       by: ["stockSettingId"],
       _sum: {
         quantity: true,
@@ -175,6 +180,11 @@ export const stockRouter = createTRPCRouter({
   getStockSettingList: publicProcedure.query(async ({ ctx }) => {
     const stockSettingList = await ctx.prisma.stockSetting.findMany({});
     const stockExchangeQuantitySum = await ctx.prisma.stockExchange.groupBy({
+      where: {
+        NOT: {
+          status: StockExchangeConfirmationStatus.REJECTED,
+        },
+      },
       by: ["stockSettingId"],
       _sum: {
         quantity: true,
@@ -251,7 +261,8 @@ export const stockRouter = createTRPCRouter({
           stockSettingId: input.stockSettingId,
           quantity: input.quantity,
           price: stockSetting.price,
-          buyerName: input.buyerName === "" ? input.buyerName : session.user.name ?? ""  ,
+          buyerName:
+            input.buyerName === "" ? input.buyerName : session.user.name ?? "",
           status: StockExchangeConfirmationStatus.PENDING,
           timeOccured: new Date(),
           imageUrl: input.imageUrl,

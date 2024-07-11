@@ -192,7 +192,17 @@ export default function Home() {
           py="3em"
           px="5%"
         >
-          <Text fontSize="3xl" fontFamily="h" fontWeight="bold">
+          <iframe
+            width="914"
+            height="514"
+            src="https://www.youtube.com/embed/2e4xn8vzXiE"
+            title="Tutor Terakota 1"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          ></iframe>
+
+          <Text fontSize="3xl" fontFamily="h" fontWeight="bold" mt="2em">
             {" "}
             Tertarik Untuk Membeli Saham Terrakota?
           </Text>

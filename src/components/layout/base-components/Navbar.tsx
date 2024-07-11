@@ -28,96 +28,101 @@ export const Navbar = ({ type }: NavbarProps) => {
   const mobileNavDisclosure = useDisclosure();
 
   return (
-    <Flex
-      justifyContent="space-between"
-      px={["1em", "2em"]}
-      py="0.5em"
-      alignItems="center"
-      boxShadow="4px 4px 5px rgba(0, 0, 0, 0.1)"
-      pos="sticky"
-      top="0"
-      h={["4em", "5em"]}
-    >
-      <Text
-        onClick={() => router.push("/")}
-        cursor="pointer"
-        fontSize={["0.8rem", "xl"]}
+    <Box>
+      <Flex
+        justifyContent="space-between"
+        px={["1em", "2em"]}
+        py="0.5em"
+        alignItems="center"
+        boxShadow="4px 4px 5px rgba(0, 0, 0, 0.1)"
+        pos="sticky"
+        top="0"
+        zIndex="1000"
       >
-        Terrakota Stock Exchange
-      </Text>
-      {!isMobile ? (
-        <Flex
-          ml="auto"
-          gap={["1em", "2em"]}
-          fontSize="0.8em"
-          alignItems="center"
+        <Text
+          onClick={() => router.push("/")}
+          cursor="pointer"
+          fontSize={["0.8rem", "xl"]}
         >
-          {/* Webpage Buttons */}
-          {type !== "admin" ? (
-            <>
-              <Link href="/saham" className="navlink" prefetch={false}>
-                Seri Saham
-              </Link>
-              <Link
-                href="https://storage.googleapis.com/gamma-public/asset/R8.%2009072024%20-%20Proposal%20Strategi%20Bisnis%20JAF.pdf"
-                target="_blank"
-                className="navlink"
-                prefetch={false}
-              >
-                Naskah Akademik
-              </Link>
-            </>
-          ) : (
-            <></>
-          )}
+          Terrakota Stock Exchange
+        </Text>
+        {!isMobile ? (
+          <Flex
+            ml="auto"
+            gap={["1em", "2em"]}
+            fontSize="0.8em"
+            alignItems="center"
+          >
+            {/* Webpage Buttons */}
+            {type !== "admin" ? (
+              <>
+                <Link href="/saham" className="navlink" prefetch={false}>
+                  Seri Saham
+                </Link>
+                <Link
+                  href="https://storage.googleapis.com/gamma-public/asset/R8.%2009072024%20-%20Proposal%20Strategi%20Bisnis%20JAF.pdf"
+                  target="_blank"
+                  className="navlink"
+                  prefetch={false}
+                >
+                  Naskah Akademik
+                </Link>
+              </>
+            ) : (
+              <></>
+            )}
 
-          {/* Webpage Buttons */}
-          {session ? (
-            <Menu>
-              <MenuButton as={Button}>Halo, {session.user.name}</MenuButton>
-              <MenuList
-                display="flex"
-                gap="1em"
-                p="1em"
-                flexDir="column"
-                alignItems="center"
-                pos="relative"
-                zIndex="100"
-              >
-                {session.user.role === "ADMIN" ? (
-                  <Link href="/dashboard" className="navlink" prefetch={false}>
-                    Dashboard
-                  </Link>
-                ) : (
-                  <>
+            {/* Webpage Buttons */}
+            {session ? (
+              <Menu>
+                <MenuButton as={Button}>Halo, {session.user.name}</MenuButton>
+                <MenuList
+                  display="flex"
+                  gap="1em"
+                  p="1em"
+                  flexDir="column"
+                  alignItems="center"
+                  pos="relative"
+                >
+                  {session.user.role === "ADMIN" ? (
                     <Link
-                      href="/beli-saham"
+                      href="/dashboard"
                       className="navlink"
                       prefetch={false}
                     >
-                      Lihat Saham
+                      Dashboard
                     </Link>
-                  </>
-                )}
-                <Button onClick={() => signOut()}>Logout</Button>
-              </MenuList>
-            </Menu>
-          ) : (
-            <Button onClick={() => signIn()}>Login</Button>
-          )}
-        </Flex>
-      ) : (
-        <>
-          <Button onClick={mobileNavDisclosure.onToggle} p="0.5em">
-            <RxHamburgerMenu size="1.5em" />
-          </Button>
-          <MobileNavScroller
-            isOpen={mobileNavDisclosure.isOpen}
-            session={session}
-          />
-        </>
-      )}
-    </Flex>
+                  ) : (
+                    <>
+                      <Link
+                        href="/beli-saham"
+                        className="navlink"
+                        prefetch={false}
+                      >
+                        Lihat Saham
+                      </Link>
+                    </>
+                  )}
+                  <Button onClick={() => signOut()}>Logout</Button>
+                </MenuList>
+              </Menu>
+            ) : (
+              <Button onClick={() => signIn()}>Login</Button>
+            )}
+          </Flex>
+        ) : (
+          <>
+            <Button onClick={mobileNavDisclosure.onToggle} p="0.5em">
+              <RxHamburgerMenu size="1.5em" />
+            </Button>
+            <MobileNavScroller
+              isOpen={mobileNavDisclosure.isOpen}
+              session={session}
+            />
+          </>
+        )}
+      </Flex>
+    </Box>
   );
 };
 
@@ -156,7 +161,9 @@ const MobileNavScroller = ({
       </Link>
       {session ? (
         <Menu>
-          <MenuButton as={Button}>Masuk Sebagai {session.user.name?.split(" ")[0]}</MenuButton>
+          <MenuButton as={Button}>
+            Masuk Sebagai {session.user.name?.split(" ")[0]}
+          </MenuButton>
           <MenuList
             display="flex"
             gap="1em"

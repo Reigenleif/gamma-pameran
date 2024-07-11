@@ -140,13 +140,18 @@ export const StockExchangeComponent = () => {
                   </Button>
                 </Td>
                 <Td>
-                  <BtnStatus
-                    status={
-                      stockExchange.status as StockExchangeConfirmationStatus
-                    }
-                    stockExchangeId={stockExchange.id}
-                    onUpdateStatus={onUpdateStatus}
-                  />
+                  {" "}
+                  {stockExchange.imageUrl ? (
+                    <BtnStatus
+                      status={
+                        stockExchange.status as StockExchangeConfirmationStatus
+                      }
+                      stockExchangeId={stockExchange.id}
+                      onUpdateStatus={onUpdateStatus}
+                    />
+                  ) : (
+                    <Text>Belum Upload Bukti Pembayaran</Text>
+                  )}
                 </Td>
                 <Td>
                   <MdEdit onClick={stockExchangeDisclosure.onOpen} />
@@ -219,11 +224,44 @@ const BtnStatus = ({
             : ""
         }
         color="cream.100"
-        onClick={onUpdateStatus(stockExchangeId, status)}
       >
         {status}
       </MenuButton>
-      <MenuList></MenuList>
+      <MenuList>
+        {status != StockExchangeConfirmationStatus.ACCEPTED && (
+          <Button
+            onClick={onUpdateStatus(
+              stockExchangeId,
+              StockExchangeConfirmationStatus.ACCEPTED
+            )}
+            bg="green"
+          >
+            Accept
+          </Button>
+        )}
+        {status != StockExchangeConfirmationStatus.PENDING && (
+          <Button
+            onClick={onUpdateStatus(
+              stockExchangeId,
+              StockExchangeConfirmationStatus.PENDING
+            )}
+            bg="yellow"
+          >
+            Pending
+          </Button>
+        )}
+        {status != StockExchangeConfirmationStatus.REJECTED && (
+          <Button
+            onClick={onUpdateStatus(
+              stockExchangeId,
+              StockExchangeConfirmationStatus.REJECTED
+            )}
+            bg="red"
+          >
+            Reject
+          </Button>
+        )}
+      </MenuList>
     </Menu>
   );
 };
