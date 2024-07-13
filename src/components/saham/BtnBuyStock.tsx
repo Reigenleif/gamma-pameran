@@ -33,7 +33,7 @@ const buyStockSchema = z.object({
     .number()
     .positive("Jumlah saham harus positif")
     .int("Jumlah saham harus bilangan bulat"),
-  buyerName: z.string(),
+  buyerName: z.string().optional(),
   buyerAddress: z.string().optional(),
   imageUrl: z.string().optional(),
 });
@@ -187,18 +187,6 @@ export const BtnBuyStock = ({
                 )}
               </Text>
             </Flex>
-            <StringInput
-              title={"Nama Pembeli*"}
-              field="buyerName"
-              register={register}
-              error={formState.errors.buyerName}
-            />
-            <StringInput
-              title={"Alamat Pembeli*"}
-              field="buyerAddress"
-              register={register}
-              error={formState.errors.buyerAddress}
-            />
             <Text>Informasi Pembayaran: </Text>
             <Text>Bank BCA, No. Rek: 7773058107 a.n. Kardina Sari Wardhani</Text>
             <Text color="cream.100" fontWeight="bold" fontSize="xl">

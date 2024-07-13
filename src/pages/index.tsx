@@ -169,6 +169,7 @@ export default function Home() {
           mt="2em"
           pt="2em"
           px="5%"
+          pos="relative"
         >
           <Text
             fontSize={["xl", "4xl"]}
@@ -179,7 +180,39 @@ export default function Home() {
           >
             Rencana Pembangunan
           </Text>
-          <ProductMap productList={[]} />
+          <Img src="static-map.svg" mb="1em" />
+          <Flex
+            w="100%"
+            justifyContent={["center", "right"]}
+            flexDir="column"
+            pos="absolute"
+            bottom="0"
+            color="cream.300"
+            alignItems="flex-end"
+            mr="15em"
+          >
+            <Text>Keterangan</Text>
+            <Grid
+              templateColumns="1fr 3fr"
+              templateRows="1fr 1fr 1fr"
+              gap="1em"
+              w="15em"
+            >
+              <GridItem bg="red" />
+              <GridItem>
+                <Text>Majalengka Utara</Text>
+              </GridItem>
+              <GridItem bg="yellow" />
+              <GridItem>
+                <Text>Majalengka Tengah</Text>
+              </GridItem>
+              <GridItem bg="blue" />
+              <GridItem>
+                <Text>Majalengka Selatan</Text>
+              </GridItem>
+            </Grid>
+          </Flex>
+          {/* <ProductMap productList={[]} /> */}
         </Flex>
 
         {/* Section 4 */}

@@ -60,8 +60,7 @@ export const Navbar = ({ type }: NavbarProps) => {
                   Seri Saham
                 </Link>
                 <Link
-                  href="https://storage.googleapis.com/gamma-public/asset/R8.%2009072024%20-%20Proposal%20Strategi%20Bisnis%20JAF.pdf"
-                  target="_blank"
+                  href="/naskah-akademik"
                   className="navlink"
                   prefetch={false}
                 >
