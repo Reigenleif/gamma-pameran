@@ -68,6 +68,7 @@ model User {
     image         String?
     address       String?
     phoneNumber   String?
+    isActivated   Boolean   @default(true)
 
     role UserRole @default(PARTICIPANT)
 

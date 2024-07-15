@@ -1,4 +1,5 @@
 import axios, { type AxiosProgressEvent } from "axios";
+import { z } from "zod";
 
 export enum FolderEnum {
   PROFILE = "profile-picture",
@@ -6,15 +7,27 @@ export enum FolderEnum {
   PAYMENT_PROOF = "payment-proof",
 }
 
+export const zodFolderEnum = z.union([
+  z.literal(FolderEnum.PROFILE),
+  z.literal(FolderEnum.DOCUMENT),
+  z.literal(FolderEnum.PAYMENT_PROOF),
+])
+
 export enum AllowableFileTypeEnum {
   PDF = "application/pdf",
   PNG = "image/png",
   JPEG = "image/jpeg",
   ZIP = "application/zip",
-  PICTURES = "image/*",
-  MP4 = "video/mp4"
+  PICTURES = "image/*"
 }
 
+export const zodAllowableFileTypeEnum = z.union([
+  z.literal(AllowableFileTypeEnum.PDF),
+  z.literal(AllowableFileTypeEnum.PNG),
+  z.literal(AllowableFileTypeEnum.JPEG),
+  z.literal(AllowableFileTypeEnum.ZIP),
+  z.literal(AllowableFileTypeEnum.PICTURES)
+])
 
 export const uploadFile = async (
   url: string,
@@ -37,11 +50,14 @@ export const downloadFile = async (
   onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void
 ) => {
   const axiosInstance = axios.create();
-
+ 
   const response = await axiosInstance.get<Blob>(url, {
     responseType: "blob",
     onDownloadProgress
   });
+
+  console.log(response)
+
 
   return response.data;
 };

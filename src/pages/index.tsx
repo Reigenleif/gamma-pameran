@@ -1,4 +1,16 @@
-import { Box, Button, Flex, Grid, GridItem, Img, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  GridItem,
+  Img,
+  Table,
+  TableContainer,
+  Text,
+  Th,
+  Tr,
+} from "@chakra-ui/react";
 import styles from "./index.module.css";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
@@ -15,8 +27,11 @@ import { useMemo } from "react";
 import { ProductMapType } from "~/components/Product/Map";
 import dynamic, { Loader } from "next/dynamic";
 import { useIsMobile } from "~/utils/hooks/useIsMobile";
+import { useWindowDimensions } from "~/utils/hooks/useWindowDimensions";
 
 export default function Home() {
+  const { width } = useWindowDimensions();
+
   const ProductMap = useMemo(
     () =>
       dynamic((() => import("~/components/Product/Map")) as Loader, {
@@ -25,6 +40,9 @@ export default function Home() {
       }),
     []
   ) as ProductMapType;
+
+  const getStockExhangeList = api.stock.getStockExchangeList.useQuery();
+  const stockExchangeList = getStockExhangeList.data;
 
   return (
     <PublicLayout>
@@ -170,6 +188,7 @@ export default function Home() {
           pt="2em"
           px="5%"
           pos="relative"
+          w="min(60em, 100%)"
         >
           <Text
             fontSize={["xl", "4xl"]}
@@ -180,33 +199,33 @@ export default function Home() {
           >
             Rencana Pembangunan
           </Text>
-          <Img src="static-map.svg" mb="1em" />
+          <Img src="static-map.svg" mb="1em" w="100%" />
           <Flex
-            w="100%"
             justifyContent={["center", "right"]}
             flexDir="column"
             pos="absolute"
             bottom="0"
             color="cream.300"
-            alignItems="flex-end"
+            alignItems="center"
+            fontSize={["3xs", "sm"]}
             mr="15em"
+            mb={["5em", "3em"]}
           >
-            <Text>Keterangan</Text>
             <Grid
               templateColumns="1fr 3fr"
               templateRows="1fr 1fr 1fr"
               gap="1em"
               w="15em"
             >
-              <GridItem bg="red" />
+              <GridItem bg="red" opacity="0.4" />
               <GridItem>
                 <Text>Majalengka Utara</Text>
               </GridItem>
-              <GridItem bg="yellow" />
+              <GridItem bg="yellow" opacity="0.4" />
               <GridItem>
                 <Text>Majalengka Tengah</Text>
               </GridItem>
-              <GridItem bg="blue" />
+              <GridItem bg="blue" opacity="0.4" />
               <GridItem>
                 <Text>Majalengka Selatan</Text>
               </GridItem>
@@ -216,6 +235,40 @@ export default function Home() {
         </Flex>
 
         {/* Section 4 */}
+        {stockExchangeList && stockExchangeList.length > 0 && (
+          <Flex
+            p="3em"
+            flexDir="column"
+            transform={[
+              `scale(${Math.round((100 * width) / 575) / 100})`,
+              "none",
+            ]}
+          >
+            <Text fontSize={["xl", "3xl"]} fontWeight="bold" textAlign="center">
+              Pembeli Saham Terrakota
+            </Text>
+            <TableContainer mt="1em" fontSize={["xs", "md"]}>
+              <Table columnGap="0.2em">
+                <Tr fontWeight="bold">
+                  <Th>No</Th>
+                  <Th>Kode Saham</Th>
+                  <Th>Nama</Th>
+                  <Th>Jumlah Saham</Th>
+                </Tr>
+                {stockExchangeList.map((stock, idx) => (
+                  <Tr key={idx}>
+                    <Th>{idx + 1}</Th>
+                    <Th>{stock.StockSetting?.code}</Th>
+                    <Th>{stock.buyerName}</Th>
+                    <Th>{stock.quantity}</Th>
+                  </Tr>
+                ))}
+              </Table>
+            </TableContainer>
+          </Flex>
+        )}
+
+        {/* Section 5 */}
         <Flex
           bg="cream.200"
           w="100%"

@@ -1,7 +1,7 @@
 import { AllowableFileTypeEnum } from "../file";
 
 
-export const extensionContentTypeConverter = (extension: string): AllowableFileTypeEnum => {
+export const extensionContentTypeConverter = (extension: string | undefined): AllowableFileTypeEnum => {
     switch (extension) {
         case "pdf":
             return AllowableFileTypeEnum.PDF;
@@ -13,8 +13,6 @@ export const extensionContentTypeConverter = (extension: string): AllowableFileT
             return AllowableFileTypeEnum.JPEG;
         case "zip":
             return AllowableFileTypeEnum.ZIP;
-        case "mp4":
-            return AllowableFileTypeEnum.MP4;
         default:
             return AllowableFileTypeEnum.PICTURES;
     }
