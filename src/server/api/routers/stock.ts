@@ -150,6 +150,29 @@ export const stockRouter = createTRPCRouter({
         throw new Error("Kode saham tidak ditemukan");
       }
 
+      // Case : Remaining Stock is not enough
+      const stockExchangeAggr = await ctx.prisma.stockExchange.aggregate({
+        where: {
+          stockSettingId: input.stockSettingId,
+          status: { not: StockExchangeConfirmationStatus.REJECTED },
+        },
+        _sum: {
+          quantity: true,
+        },
+      });
+
+      const {
+        _sum: { quantity: stockExchangeQuantitySum },
+      } = stockExchangeAggr;
+
+      console.log(stockExchangeAggr);
+      if (
+        (stockExchangeQuantitySum ?? 0) + input.quantity >
+        stockSetting.maxStock
+      ) {
+        throw new Error("Jumlah saham yang tersedia tidak mencukupi");
+      }
+
       // Case : Buyer Email Filled
       if (input.buyerEmail) {
         let buyerUser = await ctx.prisma.user.findUnique({
@@ -157,7 +180,7 @@ export const stockRouter = createTRPCRouter({
             email: input.buyerEmail,
           },
         });
-2
+        2;
         if (!buyerUser) {
           buyerUser = await ctx.prisma.user.create({
             data: {
@@ -260,7 +283,21 @@ export const stockRouter = createTRPCRouter({
         };
       });
 
-      return newRes;
+      const count = await ctx.prisma.stockExchange.count({
+        where: {
+          buyerName: {
+            contains: input.buyerName,
+          },
+          status: input.status,
+        },
+      });
+
+      return {
+        data: newRes,
+        metadata: {
+          count,
+        },
+      };
     }),
   adminGetStockExchangeById: adminProcedure
     .input(
@@ -407,6 +444,28 @@ export const stockRouter = createTRPCRouter({
         throw new Error("Kode saham tidak ditemukan");
       }
 
+      // Case : Remaining Stock is not enough
+      const stockExchangeAggr = await ctx.prisma.stockExchange.aggregate({
+        where: {
+          stockSettingId: input.stockSettingId,
+          status: { not: StockExchangeConfirmationStatus.REJECTED },
+        },
+        _sum: {
+          quantity: true,
+        },
+      });
+
+      const {
+        _sum: { quantity: stockExchangeQuantitySum },
+      } = stockExchangeAggr;
+
+      if (
+        (stockExchangeQuantitySum ?? 0) + input.quantity >
+        stockSetting.maxStock
+      ) {
+        throw new Error("Jumlah saham yang tersedia tidak mencukupi");
+      }
+
       return await ctx.prisma.stockExchange.create({
         data: {
           buyerId: session.user.id,
@@ -452,6 +511,40 @@ export const stockRouter = createTRPCRouter({
       }
       if (stock.buyerId !== userId) {
         throw new Error("Unauthorized");
+      }
+
+      // Case quantity is not enough
+      if (input.quantity && stock.stockSettingId) {
+        const stockSetting = await ctx.prisma.stockSetting.findUnique({
+          where: {
+            id: stock.stockSettingId,
+          },
+        });
+
+        if (!stockSetting) {
+          throw new Error("Stock setting not found");
+        }
+
+        const stockExchangeAggr = await ctx.prisma.stockExchange.aggregate({
+          where: {
+            stockSettingId: stock.stockSettingId,
+            status: { not: StockExchangeConfirmationStatus.REJECTED },
+          },
+          _sum: {
+            quantity: true,
+          },
+        });
+
+        const {
+          _sum: { quantity: stockExchangeQuantitySum },
+        } = stockExchangeAggr;
+
+        if (
+          (stockExchangeQuantitySum ?? 0) - stock.quantity + input.quantity >
+          stockSetting.maxStock
+        ) {
+          throw new Error("Jumlah saham yang tersedia tidakmencukupi");
+        }
       }
 
       return await ctx.prisma.stockExchange.update({

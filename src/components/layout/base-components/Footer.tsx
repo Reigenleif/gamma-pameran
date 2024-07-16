@@ -6,7 +6,7 @@ export const Footer = () => {
       gap="1em"
       w="100%"
       alignItems="center"
-      px={{ base: "2em", md: "3em" }}
+      px={["1em", "3em"]}
       py="1em"
       border="t"
       borderTop="2px solid"

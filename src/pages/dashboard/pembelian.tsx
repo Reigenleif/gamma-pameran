@@ -1,4 +1,14 @@
-import { Button, Divider, Flex, Select, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Divider,
+  Flex,
+  Select,
+  Table,
+  TableContainer,
+  Td,
+  Text,
+  Tr,
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -13,6 +23,7 @@ import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
 import { FolderEnum } from "~/utils/file";
 import { extensionContentTypeConverter } from "~/utils/function/extensionContentTypeConverter";
+import { toCurrencyStr } from "~/utils/function/toCurrencyStr";
 import { useToaster } from "~/utils/hooks/useToaster";
 import { useUploader } from "~/utils/hooks/useUploader";
 
@@ -64,9 +75,10 @@ const PembelianComponent = () => {
   const { uploader } = useUploader();
   const toaster = useToaster();
 
-  const { register, formState, handleSubmit, reset } = useForm<FormFields>({
-    resolver: zodResolver(schema),
-  });
+  const { register, formState, handleSubmit, reset, watch } =
+    useForm<FormFields>({
+      resolver: zodResolver(schema),
+    });
 
   const fileStateArr = useState<File | null | undefined>(null);
 
@@ -76,6 +88,10 @@ const PembelianComponent = () => {
     api.stock.adminUpdateStockExchangeById.useMutation();
 
   const stockSettingList = getStockSettingList.data;
+
+  const selectedStockSetting = stockSettingList?.find(
+    (stockSetting) => stockSetting.code === watch("stockCode")
+  );
 
   const onSubmit = handleSubmit(async (data: FormFields) => {
     const callFunc = async () => {
@@ -112,7 +128,6 @@ const PembelianComponent = () => {
           imageUrl: uploadRes.publicUrl,
         });
       }
-
       reset();
     };
 
@@ -122,7 +137,7 @@ const PembelianComponent = () => {
   return (
     <Flex>
       <DashboardSideNav />
-      <Flex flexDir="column" w="100%" p="1em" gap="1em">
+      <Flex flexDir="column" w="80%" p="1em" gap="1em">
         <Text fontSize="2xl" fontWeight="bold">
           Pembelian Saham Manual
         </Text>
@@ -177,6 +192,30 @@ const PembelianComponent = () => {
             type="number"
             error={formState.errors.quantity}
           />
+          {selectedStockSetting && (
+            <TableContainer>
+              <Table>
+                <Tr>
+                  <Td>Sisa Saham</Td>
+                  <Td>{`: ${
+                    (selectedStockSetting?.maxStock ?? 0) -
+                    (selectedStockSetting?.stockExchangeSum ?? 0)
+                  }`}</Td>
+                </Tr>
+                <Tr>
+                  <Td>Harga Saham</Td>
+                  <Td>{`: ${toCurrencyStr(selectedStockSetting?.price)}`}</Td>
+                </Tr>
+                <Tr>
+                  <Td>Total Harga</Td>
+                  <Td w="90%">{`: ${toCurrencyStr(
+                    watch("quantity") &&
+                      (selectedStockSetting?.price ?? 0) * watch("quantity")
+                  )}`}</Td>
+                </Tr>
+              </Table>
+            </TableContainer>
+          )}
           <Text fontSize="xl" fontWeight="bold">
             Upload Bukti Pembayaran
           </Text>

@@ -4,8 +4,8 @@ export const toCurrencyStr = (value: number): string => {
     currency: "IDR",
   });
 
-  if (valStr.includes("Rp")) {
-    return valStr;
+  if (valStr.includes("NaN")) {
+    return "Rp0";
   }
-  return "Rp 0";
+  return valStr
 };

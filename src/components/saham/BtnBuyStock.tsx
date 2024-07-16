@@ -81,32 +81,33 @@ export const BtnBuyStock = ({
   }, [onOpen]);
 
   const onSubmit = handleSubmit(async (data: BuyStockFields) => {
-    const newData = await createStockExchangeMutation({
-      ...data,
-    });
+    const callFn = async () => {
+      const newData = await createStockExchangeMutation({
+        ...data,
+      });
 
-    const file = fileStateArr[0];
-    if (file) {
-      const contentType = extensionContentTypeConverter(
-        file.name?.split(".").pop() ?? ""
-      );
-      const img = await uploader.uploader(
-        newData.id,
-        FolderEnum.PAYMENT_PROOF,
-        contentType,
-        file
-      );
+      const file = fileStateArr[0];
+      if (file) {
+        const contentType = extensionContentTypeConverter(
+          file.name?.split(".").pop() ?? ""
+        );
+        const img = await uploader.uploader(
+          newData.id,
+          FolderEnum.PAYMENT_PROOF,
+          contentType,
+          file
+        );
 
-      toaster(
         updateStockExchangeMutation({
           id: newData.id,
           imageUrl: img?.url,
-        })
-      );
-    }
+        });
+      }
+      reset();
+      onClose();
+    };
 
-    reset();
-    onClose();
+    toaster(callFn());
   });
 
   useEffect(() => {
@@ -143,14 +144,14 @@ export const BtnBuyStock = ({
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent minW="40%">
           <ModalHeader>Beli Saham</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text color="cream.100" fontWeight="bold" fontSize="xl">
               Jenis Saham*
             </Text>
-            <Select {...register("stockSettingId")}>
+            <Select {...register("stockSettingId")} placeholder="Pilih Saham">
               {stockSettingList.map((stockSetting) => (
                 <option
                   key={stockSetting.id}
@@ -188,7 +189,9 @@ export const BtnBuyStock = ({
               </Text>
             </Flex>
             <Text>Informasi Pembayaran: </Text>
-            <Text>Bank BCA, No. Rek: 7773058107 a.n. Kardina Sari Wardhani</Text>
+            <Text>
+              Bank BCA, No. Rek: 7773058107 a.n. Kardina Sari Wardhani
+            </Text>
             <Text color="cream.100" fontWeight="bold" fontSize="xl">
               Bukti Pembayaran
             </Text>

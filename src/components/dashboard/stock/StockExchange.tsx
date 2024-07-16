@@ -1,7 +1,11 @@
 import {
+  Box,
   Button,
+  Flex,
+  Input,
   Menu,
   MenuButton,
+  MenuItem,
   MenuList,
   ModalCloseButton,
   Table,
@@ -13,7 +17,7 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { api } from "~/utils/api";
 import { StockExchangeConfirmationStatus } from "~/utils/enums";
 import { FaEye } from "react-icons/fa";
@@ -57,7 +61,10 @@ export const StockExchangeComponent = () => {
   const updateStockExchange =
     api.stock.adminUpdateStockExchangeById.useMutation();
 
-  const stockExchangeList = getStockExchangeList.data;
+  const stockExchangeList = getStockExchangeList.data?.data ?? [];
+  const maxPage = Math.ceil(
+    (getStockExchangeList.data?.metadata.count ?? 0) / pageSize
+  );
 
   const onUpdateStatus =
     (id: string, status: StockExchangeConfirmationStatus) => () => {
@@ -65,6 +72,7 @@ export const StockExchangeComponent = () => {
         id,
         status,
       });
+      getStockExchangeList.refetch();
     };
 
   const { register, formState, handleSubmit, setValue } =
@@ -106,42 +114,138 @@ export const StockExchangeComponent = () => {
   });
 
   return (
-    <>
+    <Flex flexDir="column">
       <Text fontSize="2xl" fontWeight="bold">
         Daftar Pembeli Lembar Saham
       </Text>
+      <Text>Cari Pembelian Saham</Text>
       <TableContainer>
-        <Table>
-          <Thead>
-            <Tr fontWeight="bold">
-              <Td> No. </Td>
-              <Td>Jenis Saham</Td>
-              <Td> Nama Pembeli </Td>
-              <Td> Harga Saat Beli (Rp)</Td>
-              <Td> Jumlah </Td>
-              <Td> Bukti Pembayaran</Td>
-              <Td> Status </Td>
-              <Td> Edit</Td>
-            </Tr>
-          </Thead>
-          {stockExchangeList?.map((stockExchange, index) => (
-            <Tbody key={stockExchange.id}>
-              <Tr>
-                <Td>{(page - 1) * pageSize + index + 1}</Td>
-                <Td>{stockExchange.StockSetting?.code ?? "-"}</Td>
-                <Td>{stockExchange.buyerName}</Td>
-                <Td>{stockExchange.price}</Td>
-                <Td>{stockExchange.quantity}</Td>
-                <Td>
-                  <Button>
-                    <a href={stockExchange.imageUrl ?? ""} target="_blank">
-                      <FaEye size="2em" />
-                    </a>
-                  </Button>
-                </Td>
-                <Td>
-                  {" "}
-                  {stockExchange.imageUrl ? (
+        <Table w="min(40em, 40%)">
+          <Tr>
+            <Td>Nama Pembeli</Td>
+            <Td>
+              <Input
+                value={buyerNameSearchInput}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setBuyerNameSearchInput(e.target.value)
+                }
+                w="20em"
+              />
+            </Td>
+          </Tr>
+          <Tr>
+            <Td>Status</Td>
+            <Td>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  bg={
+                    statusSearchInput ==
+                    StockExchangeConfirmationStatus.ACCEPTED
+                      ? "green.400"
+                      : statusSearchInput ==
+                        StockExchangeConfirmationStatus.PENDING
+                      ? "yellow.400"
+                      : statusSearchInput ==
+                        StockExchangeConfirmationStatus.REJECTED
+                      ? "red.400"
+                      : undefined
+                  }
+                >
+                  {statusSearchInput ?? "Semua"}
+                </MenuButton>
+                <MenuList>
+                  <MenuItem
+                    onClick={() => setStatusSearchInput(undefined)}
+                    key="all"
+                  >
+                    Semua
+                  </MenuItem>
+                  {Object.values(StockExchangeConfirmationStatus).map(
+                    (status) => (
+                      <MenuItem
+                        onClick={() => setStatusSearchInput(status)}
+                        key={status}
+                        bg={
+                          status == StockExchangeConfirmationStatus.ACCEPTED
+                            ? "green.400"
+                            : status == StockExchangeConfirmationStatus.PENDING
+                            ? "yellow.400"
+                            : status == StockExchangeConfirmationStatus.REJECTED
+                            ? "red.400"
+                            : ""
+                        }
+                      >
+                        {status}
+                      </MenuItem>
+                    )
+                  )}
+                </MenuList>
+              </Menu>
+            </Td>
+          </Tr>
+
+          <Tr>
+            <Td>
+              <Flex gap="1em" alignItems="center">
+                <Button
+                  onClick={() =>
+                    setPage((curr) => (curr - 1 <= 0 ? maxPage : curr - 1))
+                  }
+                >
+                  Prev
+                </Button>
+                <Text>{page}</Text>
+                <Button
+                  onClick={() =>
+                    setPage((curr) => (curr + 1 > maxPage ? 1 : curr + 1))
+                  }
+                >
+                  Next
+                </Button>
+              </Flex>
+            </Td>
+          </Tr>
+        </Table>
+      </TableContainer>
+      <Box overflowX="auto" w="80vw" className="scrollable">
+        <TableContainer>
+          <Table>
+            <Thead>
+              <Tr fontWeight="bold">
+                <Td> No. </Td>
+                <Td>Jenis Saham</Td>
+                <Td> Nama Pembeli </Td>
+                <Td> Harga Saat Beli (Rp)</Td>
+                <Td> Jumlah </Td>
+                <Td> Kode Saham</Td>
+                <Td> Bukti Pembayaran</Td>
+                <Td> Status </Td>
+                <Td> Edit</Td>
+              </Tr>
+            </Thead>
+            {stockExchangeList?.map((stockExchange, index) => (
+              <Tbody key={stockExchange.id}>
+                <Tr>
+                  <Td>{(page - 1) * pageSize + index + 1}</Td>
+                  <Td>{stockExchange.StockSetting?.code ?? "-"}</Td>
+                  <Td>{stockExchange.buyerName}</Td>
+                  <Td>{stockExchange.price}</Td>
+                  <Td>{stockExchange.quantity}</Td>
+                  <Td>{stockExchange.code} - {stockExchange.code + stockExchange.quantity - 1}</Td>
+                  <Td>
+                    {stockExchange.imageUrl ? (
+                      <Button>
+                        <a href={stockExchange.imageUrl ?? ""} target="_blank">
+                          <FaEye size="2em" />
+                        </a>
+                      </Button>
+                    ) : (
+                      <Text>Belum Upload</Text>
+                    )}
+                  </Td>
+                  <Td>
+                    {" "}
                     <BtnStatus
                       status={
                         stockExchange.status as StockExchangeConfirmationStatus
@@ -149,18 +253,16 @@ export const StockExchangeComponent = () => {
                       stockExchangeId={stockExchange.id}
                       onUpdateStatus={onUpdateStatus}
                     />
-                  ) : (
-                    <Text>Belum Upload Bukti Pembayaran</Text>
-                  )}
-                </Td>
-                <Td>
-                  <MdEdit onClick={stockExchangeDisclosure.onOpen} />
-                </Td>
-              </Tr>
-            </Tbody>
-          ))}
-        </Table>
-      </TableContainer>
+                  </Td>
+                  <Td cursor="pointer">
+                    <MdEdit onClick={stockExchangeDisclosure.onOpen} />
+                  </Td>
+                </Tr>
+              </Tbody>
+            ))}
+          </Table>
+        </TableContainer>
+      </Box>
       <Modal
         isOpen={stockExchangeDisclosure.isOpen}
         onClose={stockExchangeDisclosure.onClose}
@@ -188,7 +290,7 @@ export const StockExchangeComponent = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Flex>
   );
 };
 
@@ -227,7 +329,7 @@ const BtnStatus = ({
       >
         {status}
       </MenuButton>
-      <MenuList>
+      <MenuList as={Flex} gap="1em" p="1em">
         {status != StockExchangeConfirmationStatus.ACCEPTED && (
           <Button
             onClick={onUpdateStatus(

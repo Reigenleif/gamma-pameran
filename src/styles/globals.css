@@ -56,3 +56,18 @@ a {
   color: blue;
   font-size: large;
 }
+
+.scrollable::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 4rem;
+  color: white; 
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background-color: #054e84;
+  border-radius: 0.25rem;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  background-color: transparent;
+}
