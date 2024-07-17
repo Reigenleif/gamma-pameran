@@ -6,7 +6,7 @@ export const Footer = () => {
       gap="1em"
       w="100%"
       alignItems="center"
-      px={{ base: "2em", md: "3em" }}
+      px={["1em", "3em"]}
       py="1em"
       border="t"
       borderTop="2px solid"
@@ -14,7 +14,7 @@ export const Footer = () => {
       justifyContent="space-between"
     >
       <Text fontSize="md">
-        &copy;2024 Jatiwangi Art Festival. All rights reserved.
+        &copy;2024 Pasar Saham Terrakota. All rights reserved.
       </Text>
       <Text fontSize="md">
         By Gamma Metrics

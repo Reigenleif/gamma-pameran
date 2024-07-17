@@ -1,9 +1,18 @@
 import { api } from "~/utils/api";
 import { useState } from "react";
-import { Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Input,
+  Text,
+  Textarea,
+  useToast,
+} from "@chakra-ui/react";
 import { useToaster } from "~/utils/hooks/useToaster";
 import { PasswordInput } from "~/utils/elements/PasswordInput";
-
+import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
+import { isValidPhoneNumber } from "~/utils/function/isValidPhoneNumber";
 interface SignUpProps {
   csrfToken: string;
 }
@@ -11,12 +20,14 @@ interface SignUpProps {
 export const SignUp = ({ csrfToken }: SignUpProps) => {
   const toast = useToast();
   const toaster = useToaster();
+  const router = useRouter();
 
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
   const [addressInput, setAddressInput] = useState("");
+  const [phoneInput, setPhoneInput] = useState("");
 
   const emailChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailInput(e.target.value);
@@ -36,15 +47,41 @@ export const SignUp = ({ csrfToken }: SignUpProps) => {
     setNameInput(e.target.value);
   };
 
-  const addressChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const addressChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setAddressInput(e.target.value);
+  };
+
+  const phoneChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isValidPhoneNumber(e.target.value)) {
+      setPhoneInput(e.target.value);
+    }
   };
 
   const createUserMutation = api.user.createUser.useMutation();
 
-  const credentialSignUp = (email: string, password: string) => {
+  const credentialSignUp = (
+    email: string,
+    password: string,
+    name: string,
+    address: string,
+    phoneNumber: string
+  ) => {
     // TODO: Kasih CSRF Validation & reCAPTCHA
-    toaster(createUserMutation.mutateAsync({ email, password }));
+    toaster(
+      createUserMutation
+        .mutateAsync({
+          email,
+          password,
+          name,
+          address,
+          phoneNumber,
+        })
+        .then(async () => {
+          signIn("credentials", { email, password, redirect: false, csrfToken });
+        }).then(() => {
+          router.replace("/");
+        })
+    );
   };
 
   const credentialButtonClickHandler = () => {
@@ -117,7 +154,14 @@ export const SignUp = ({ csrfToken }: SignUpProps) => {
       });
       return;
     }
-    credentialSignUp(emailInput, passwordInput);
+
+    credentialSignUp(
+      emailInput,
+      passwordInput,
+      nameInput,
+      addressInput,
+      phoneInput
+    );
   };
 
   return (
@@ -135,24 +179,33 @@ export const SignUp = ({ csrfToken }: SignUpProps) => {
           w="100%"
           value={nameInput}
           onChange={nameChangeHandler}
-          placeholder="Nama"
+          placeholder="Nama*"
+          name="name"
         />
         <Input
           mt="1em"
           w="100%"
           value={emailInput}
           onChange={emailChangeHandler}
-          placeholder="Email"
+          placeholder="Email*"
         />
         <Input
           mt="1em"
           w="100%"
-          type="text"
-          h="xl"
+          value={phoneInput}
+          onChange={phoneChangeHandler}
+          placeholder="Nomor Telepon"
+        />
+        <Textarea
+          mt="1em"
+          w="100%"
+          h="6em"
           overflowWrap="anywhere"
           value={addressInput}
           onChange={addressChangeHandler}
-          placeholder="Alamat Lengkap"
+          placeholder="Alamat Lengkap*"
+          wordBreak="break-word"
+          color="white"
         />
 
         <PasswordInput
@@ -160,16 +213,15 @@ export const SignUp = ({ csrfToken }: SignUpProps) => {
           w="100%"
           value={passwordInput}
           onChange={passwordChangeHandler}
-          placeholder="Password"
+          placeholder="Password*"
         />
         <PasswordInput
           mt="1em"
           w="100%"
           value={confirmPasswordInput}
           onChange={confirmPasswordChangeHandler}
-          placeholder="Konfimasi Password"
+          placeholder="Konfimasi Password*"
         />
-
         <Button
           onClick={credentialButtonClickHandler}
           w="50%"

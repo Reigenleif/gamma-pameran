@@ -1,4 +1,16 @@
-import { Box, Button, Flex, Grid, GridItem, Img, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  GridItem,
+  Img,
+  Table,
+  TableContainer,
+  Text,
+  Th,
+  Tr,
+} from "@chakra-ui/react";
 import styles from "./index.module.css";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
@@ -14,8 +26,12 @@ import { Slide, StaggeredSlide } from "~/utils/animation/entrance-animation";
 import { useMemo } from "react";
 import { ProductMapType } from "~/components/Product/Map";
 import dynamic, { Loader } from "next/dynamic";
+import { useIsMobile } from "~/utils/hooks/useIsMobile";
+import { useWindowDimensions } from "~/utils/hooks/useWindowDimensions";
 
 export default function Home() {
+  const { width } = useWindowDimensions();
+
   const ProductMap = useMemo(
     () =>
       dynamic((() => import("~/components/Product/Map")) as Loader, {
@@ -24,6 +40,9 @@ export default function Home() {
       }),
     []
   ) as ProductMapType;
+
+  const getStockExhangeList = api.stock.getStockExchangeList.useQuery();
+  const stockExchangeList = getStockExhangeList.data;
 
   return (
     <PublicLayout>
@@ -34,7 +53,15 @@ export default function Home() {
         minH="100dvh"
       >
         {/* Section 1 */}
-        <Img src="/stock.webp" w="100%" h="15em" objectFit="cover" objectPosition="100% 20%"/>
+        <Slide from="top">
+          <Img
+            src="/first-png.webp"
+            w="100vw"
+            h="calc(100dvh - 2em)"
+            objectFit="cover"
+            objectPosition="100% 0%"
+          />
+        </Slide>
         <Flex
           flexDir={["column", "row"]}
           alignItems={["center", "none"]}
@@ -47,21 +74,40 @@ export default function Home() {
         >
           <Flex flexDir="column" gap="3em" w="min(75em, 100%)">
             <Slide from="left">
-              <Text fontSize="3xl" fontWeight="bold" fontStyle="h">
+              <Text fontSize={["xl", "3xl"]} fontWeight="bold" fontStyle="h">
                 Terrakota Stock Exchange - Pasar Saham Terrakota
               </Text>
-              <Text fontSize="2xl" textAlign="justify">
-                Pasar Saham Terrakota menjadi media untuk menghimpun Dana Abadi
-                Wilayah bagi inisiatif-inisiatif kolektif dalam rangka
-                mengembangkan Kawasan Pemajuan Kebudayaan Terrakota. Pasar Saham
-                Terrakota merupakan respon terhadap perkembangan ekonomi wilayah
-                yang kontribusinya kurang signifikan dan pertumbuhannya kurang
-                cepat. Karya ini menjadi inisiatif awal dalam menjawab bagaimana
-                membangun sebuah wilayah secara kolektif. Inisiatif-inisiatif
-                kolektif tersebut dikurasi dalam koridor ekonomi kebudayaan dan
-                dievaluasi secara teknis yang kemudian kita hadirkan dalam
-                bentuk saham. Siapapun dapat ikut memiliki saham Terrakota yang
-                akan diputar melalui berbagai model ekonomi kultural.
+            </Slide>
+            <Slide from="right">
+              <Text fontSize={["md", "2xl"]} textAlign="justify">
+                Hadirnya Pasar Saham Terrakota (Terrakota Stock Exchange)
+                merupakan sebuah inovasi gerakan kolektif dalam bentuk urundana
+                (crowdfunding) untuk mendukung inisiasi Dana Abadi Kawasan
+                Pemajuan Kebudayaan oleh Koperasi Tanaraya Jalan Kebudayaan.
+                Adapun program Kawasan Pemajuan Kebudayaan merupakan program
+                yang telah disepakati dalam Musyawarah Perencanaan dan
+                Pembangunan (Musrenbang) dalam Pekan Kebudayaan Nasional (PKN
+                2023) sebagai bentuk komitmen pengarusutamaan kebudayaan dalam
+                rencana pembangunan menuju Indonesia Emas 2045.
+              </Text>
+            </Slide>
+            <Slide from="left">
+              <Text fontSize={["md", "2xl"]} textAlign="justify">
+                Dana Abadi Kebudayaan nantinya diproyeksikan untuk menjadi
+                katalis sekaligus akselerator eksperimentasi ekonomi berbasis
+                identitas kebudayaan daerah oleh kolektif seni yang
+                diharmonisasi dengan isu dan narasi pembangunan. Pasar Saham
+                Terrakota menjadi media untuk menghimpun Dana Abadi Wilayah bagi
+                inisiatif-inisiatif kolektif dalam rangka mengembangkan Kawasan
+                Pemajuan Kebudayaan Terrakota. Pasar Saham Terrakota merupakan
+                respon terhadap perkembangan ekonomi wilayah yang kontribusinya
+                kurang signifikan dan pertumbuhannya kurang cepat. Karya ini
+                menjadi inisiatif awal dalam menjawab bagaimana membangun sebuah
+                wilayah secara kolektif. Inisiatif-inisiatif kolektif tersebut
+                dikurasi dalam koridor ekonomi kebudayaan dan dievaluasi secara
+                teknis yang kemudian kita hadirkan dalam bentuk saham. Siapapun
+                dapat ikut memiliki saham Terrakota yang akan diputar melalui
+                berbagai model ekonomi kultural.
               </Text>
             </Slide>
           </Flex>
@@ -110,68 +156,23 @@ export default function Home() {
               gap="3rem"
               color="white"
             >
-              <Text fontSize="4xl" fontWeight="bold" fontStyle="h" w="100%">
+              <Text
+                fontSize={["2xl", "4xl"]}
+                fontWeight="bold"
+                fontStyle="h"
+                w="100%"
+              >
                 Mengapa Saham Terrakota Perlu Diimplementasikan?
               </Text>
               <Section2Box
-                text="Hadirnya Pasar Saham Terakota (Terakota Stock Exchange)
-                  merupakan sebuah inovasi gerakan kolektif dalam bentuk
-                  urundana (crowdfunding) untuk mendukung inisiasi Dana Abadi
-                  Kebudayaan oleh Koperasi Tanaraya Jalan Kebudayaan bersama
-                  dengan Jatiwangi Art Factory, serta gagasan pengembangan
-                  Kawasan Pemajuan Kebudayaan. Adapun program Kawasan Pemajuan
-                  Kebudayaan merupakan program yang telah disepakati dalam
-                  Musyawarah Perencanaan dan Pembangunan (Musrenbang) bersama
-                  dengan Kementerian Perencanaan/Bappenas, Kementerian
-                  Pendidikan dan Kebudayaan, dan Jatiwangi Art Factory dalam
-                  Pekan Kebudayaan Nasional (PKN 2023) sebagai bentuk komitmen
-                  pengarusutamaan kebudayaan dalam rencana pembangunan menuju
-                  Indonesia Emas 2045."
+                text="Pasar Saham Terrakota menjadi media untuk menghimpun Dana Abadi Wilayah bagi inisiatif-inisiatif kolektif dalam rangka mengembangkan Kawasan Pemajuan Kebudayaan Terrakota. Pasar Saham Terrakota merupakan respon terhadap perkembangan ekonomi wilayah yang kontribusinya kurang signifikan dan pertumbuhannya kurang cepat. Karya ini menjadi inisiatif awal dalam menjawab bagaimana membangun sebuah wilayah secara kolektif. Inisiatif-inisiatif kolektif tersebut dikurasi dalam koridor ekonomi kebudayaan dan dievaluasi secara teknis yang kemudian kita hadirkan dalam bentuk saham. Siapapun dapat ikut memiliki saham Terrakota yang akan diputar melalui berbagai model ekonomi kultural."
                 arrangement="left"
-                imgUrl="home/sect2-1.png"
+                imgUrl="why1.webp"
               />
               <Section2Box
-                text="Inisiasi Dana Abadi Kebudayaan yang dihimpun oleh Pasar Saham
-                  Terakota bak oase di teriknya gurun pasir skena kolektif seni
-                  tanah air sekaligus terobosan untuk mendorong resiliensi dalam
-                  bereksperimentasi dan berkegiatan seni. Selain itu, Dana Abadi
-                  Kebudayaan dalam jangka panjang juga diproyeksikan untuk menjadi
-                  solusi untuk mendorong kemandirian kolektif seni nasional."
+                text="Kerja Tanah yang selama ini diupayakan kini mengarah pada aspirasi bersama tentang wilayah kebudayaan tanah yang kami sebut sebagai Kota-Terrakota. Aspirasi ini kini dituangkan dalam dokumen tata ruang Majalengka sebagai Kawasan Strategis Terrakota dan dijadikan sebagai percontohan untuk Kawasan Pemajuan Kebudayaan dalam RPJMN (Rencana Pembangunan Jangka Menengah Nasional). Proses perwujudan Kota-Terrakota sebagai Kawasan Strategis maupun Kawasan Pemajuan Kebudayaan ini kami sikapi sebagai sebuah upaya kolektif dan kolaboratif. "
                 arrangement="right"
-                imgUrl="home/sect2-2.png"
-              />
-              <Section2Box
-                text="Dalam pengimplementasiannya, Dana Abadi Kebudayaan akan
-                diselaraskan dengan pengembangan sektor-sektor berbasis
-                identitas kebudayaan dan kewilayahan. Majalengka, sebagai salah
-                satu daerah di Provinsi Jawa Barat sekaligus tempat lahirnya
-                Pasar Saham Terakota prakarsa Koperasi Tanaraya Jalan Kebudayaan
-                dan Jatiwangi Art Factory, dikenal memiliki identitas kebudayaan
-                terakota serta keunggulan kompetitif yang disegmentasi menjadi
-                tiga bagian wilayah Majalengka berdasarkan analisis sektoral
-                Produk Domestik Regional Bruto (PDRB)."
-                arrangement="left"
-                imgUrl="home/sect2-3.png"
-              />
-              <Section2Box
-                text="
-                Pada wilayah Majalengka bagian Utara, keunggulan kompetitif pada
-                sektor manufaktur dan jasa. Bergerak menuju ke Majalengka bagian
-                Tengah, keunggulan kompetitif yang dimiliki oleh Majalengka
-                Tengah adalah industri Food and Beverage (FnB), kriya, dan
-                fesyen. Sedangkan pada wilayah Majalengka bagian Selatan
-                ditunjang oleh sektor pertanian, kehutanan, dan perikanan."
-                arrangement="right"
-                imgUrl="/pots.webp"
-              />
-              <Section2Box
-                text="Dana Abadi Kebudayaan nantinya diproyeksikan untuk menjadi
-                katalis sekaligus akselerator eksperimentasi seni dan budaya
-                berbasis identitas kebudayaan daerah oleh kolektif seni yang
-                diharmonisasi dengan isu dan narasi pembangunan daerah berbasis
-                potensi kewilayahan."
-                arrangement="left"
-                imgUrl="home/sect2-3.png"
+                imgUrl="why2.webp"
               />
             </Flex>
           </Flex>
@@ -186,20 +187,88 @@ export default function Home() {
           mt="2em"
           pt="2em"
           px="5%"
+          pos="relative"
+          w="min(60em, 100%)"
         >
           <Text
-            fontSize="4xl"
+            fontSize={["xl", "4xl"]}
             fontWeight="bold"
             fontStyle="h"
             w="100%"
             textAlign="center"
           >
-            Peta Majalengka
+            Rencana Pembangunan
           </Text>
-          <ProductMap productList={[]} />
+          <Img src="static-map.svg" mb="1em" w="100%" />
+          <Flex
+            justifyContent={["center", "right"]}
+            flexDir="column"
+            pos="absolute"
+            bottom="0"
+            color="cream.300"
+            alignItems="center"
+            fontSize={["3xs", "sm"]}
+            mr="15em"
+            mb={["5em", "3em"]}
+          >
+            <Grid
+              templateColumns="1fr 3fr"
+              templateRows="1fr 1fr 1fr"
+              gap="1em"
+              w="15em"
+            >
+              <GridItem bg="red" opacity="0.4" />
+              <GridItem>
+                <Text>Majalengka Utara</Text>
+              </GridItem>
+              <GridItem bg="yellow" opacity="0.4" />
+              <GridItem>
+                <Text>Majalengka Tengah</Text>
+              </GridItem>
+              <GridItem bg="blue" opacity="0.4" />
+              <GridItem>
+                <Text>Majalengka Selatan</Text>
+              </GridItem>
+            </Grid>
+          </Flex>
+          {/* <ProductMap productList={[]} /> */}
         </Flex>
 
         {/* Section 4 */}
+        {stockExchangeList && stockExchangeList.length > 0 && (
+          <Flex
+            p="3em"
+            flexDir="column"
+            transform={[
+              `scale(${Math.round((100 * width) / 575) / 100})`,
+              "none",
+            ]}
+          >
+            <Text fontSize={["xl", "3xl"]} fontWeight="bold" textAlign="center">
+              Pembeli Saham Terrakota
+            </Text>
+            <TableContainer mt="1em" fontSize={["xs", "md"]}>
+              <Table columnGap="0.2em">
+                <Tr fontWeight="bold">
+                  <Th>No</Th>
+                  <Th>Kode Saham</Th>
+                  <Th>Nama</Th>
+                  <Th>Jumlah Saham</Th>
+                </Tr>
+                {stockExchangeList.map((stock, idx) => (
+                  <Tr key={idx}>
+                    <Th>{idx + 1}</Th>
+                    <Th>{stock.StockSetting?.code}</Th>
+                    <Th>{stock.buyerName}</Th>
+                    <Th>{stock.quantity}</Th>
+                  </Tr>
+                ))}
+              </Table>
+            </TableContainer>
+          </Flex>
+        )}
+
+        {/* Section 5 */}
         <Flex
           bg="cream.200"
           w="100%"
@@ -209,9 +278,19 @@ export default function Home() {
           py="3em"
           px="5%"
         >
-          <Text fontSize="3xl" fontFamily="h" fontWeight="bold">
+          <iframe
+            width="914"
+            height="514"
+            src="https://www.youtube.com/embed/2e4xn8vzXiE"
+            title="Tutor Terakota 1"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          ></iframe>
+
+          <Text fontSize="3xl" fontFamily="h" fontWeight="bold" mt="2em">
             {" "}
-            Tertarik Untuk Membeli Saham Kami?
+            Tertarik Untuk Membeli Saham Terrakota?
           </Text>
 
           <Link href="/saham">
@@ -232,6 +311,25 @@ const Section2Box = ({
   imgUrl: string;
   arrangement: "left" | "right";
 }) => {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <Flex flexDir="column" gap="1em">
+        <Slide from={"left"}>
+          <Text textAlign="justify" fontSize={["sm", "xl"]}>
+            {text}
+          </Text>
+        </Slide>
+        <Slide from={"right"}>
+          <Box h="15em" w="15em" bg="grey">
+            <Img src={imgUrl} h="15em" w="15em" objectFit="cover" />
+          </Box>
+        </Slide>
+      </Flex>
+    );
+  }
+
   if (arrangement === "left") {
     return (
       <Grid
@@ -251,7 +349,7 @@ const Section2Box = ({
         <GridItem display="flex" justifyContent="center">
           <Slide from={"right"}>
             <Box h="15em" w="15em" bg="grey">
-              <Img src={imgUrl} w="100%" />
+              <Img src={imgUrl} h="15em" w="15em" objectFit="cover" />
             </Box>
           </Slide>
         </GridItem>
@@ -271,7 +369,7 @@ const Section2Box = ({
       <GridItem display="flex" justifyContent="center">
         <Slide from={"left"}>
           <Box h="15em" w="15em" bg="grey">
-            <Img src={imgUrl} w="100%" />
+            <Img src={imgUrl} h="15em" w="15em" objectFit="cover" />
           </Box>
         </Slide>
       </GridItem>

@@ -15,73 +15,99 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { api } from "~/utils/api";
+import { api, RouterInputs, RouterOutputs } from "~/utils/api";
 import { StringInput } from "../form/StringInput";
 import { FileInput } from "../form/FileInput";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useToaster } from "~/utils/hooks/useToaster";
 import { getRemStockSetting } from "~/utils/function/stockLocal";
 import { useSession } from "next-auth/react";
 import { AllowableFileTypeEnum, FolderEnum } from "~/utils/file";
 import { useUploader } from "~/utils/hooks/useUploader";
+import { toCurrencyStr } from "~/utils/function/toCurrencyStr";
+import { extensionContentTypeConverter } from "~/utils/function/extensionContentTypeConverter";
 
 const buyStockSchema = z.object({
   stockSettingId: z.string(),
-  quantity: z.number(),
-  buyerName: z.string(),
+  quantity: z
+    .number()
+    .positive("Jumlah saham harus positif")
+    .int("Jumlah saham harus bilangan bulat"),
+  buyerName: z.string().optional(),
   buyerAddress: z.string().optional(),
   imageUrl: z.string().optional(),
 });
 
 type BuyStockFields = z.infer<typeof buyStockSchema>;
 
-export const BtnBuyStock = () => {
+interface BtnBuyStockProps {
+  stockSettingList: RouterOutputs["stock"]["getStockSettingList"];
+  createStockExchangeMutation: (
+    data: RouterInputs["stock"]["createStockExchange"]
+  ) => Promise<RouterOutputs["stock"]["createStockExchange"]>;
+  updateStockExchangeMutation: (
+    data: RouterInputs["stock"]["updateStockExchange"]
+  ) => Promise<RouterOutputs["stock"]["updateStockExchange"]>;
+}
+
+export const BtnBuyStock = ({
+  stockSettingList,
+  createStockExchangeMutation,
+  updateStockExchangeMutation,
+}: BtnBuyStockProps) => {
   const toaster = useToaster();
   const { data: session } = useSession();
   const uploader = useUploader();
 
-  const { register, formState, handleSubmit, reset, getValues, setValue } =
-    useForm<BuyStockFields>({
-      resolver: zodResolver(buyStockSchema),
-    });
+  const {
+    register,
+    formState,
+    handleSubmit,
+    reset,
+    getValues,
+    setValue,
+    watch,
+  } = useForm<BuyStockFields>({
+    resolver: zodResolver(buyStockSchema),
+  });
 
   const fileStateArr = useState<File | undefined | null>(null);
-
-  const getStockSettingList = api.stock.getStockSettingList.useQuery();
-  const createStockExchange = api.stock.createStockExchange.useMutation();
-  const updateStockExchange = api.stock.updateStockExchange.useMutation();
-
-  const stockSettingList = getStockSettingList.data ?? [];
+  console.log(fileStateArr[0], !!fileStateArr[0]);
 
   const { onOpen, isOpen, onClose } = useDisclosure();
 
-  const displayStockExchangeCreator = () => {
+  const displayStockExchangeCreator = useCallback(() => {
     onOpen();
-  };
+  }, [onOpen]);
 
   const onSubmit = handleSubmit(async (data: BuyStockFields) => {
-    const newData = await createStockExchange.mutateAsync(data);
+    const callFn = async () => {
+      const newData = await createStockExchangeMutation({
+        ...data,
+      });
 
-    const file = fileStateArr[0];
-    if (file) {
-      const img = await uploader.uploader(
-        newData.id,
-        FolderEnum.PAYMENT_PROOF,
-        (file.name?.split(".").pop() as AllowableFileTypeEnum) ??
-          AllowableFileTypeEnum.PNG,
-        file
-      );
-      newData.imageUrl = img?.url ?? "";
+      const file = fileStateArr[0];
+      if (file) {
+        const contentType = extensionContentTypeConverter(
+          file.name?.split(".").pop() ?? ""
+        );
+        const img = await uploader.uploader(
+          newData.id,
+          FolderEnum.PAYMENT_PROOF,
+          contentType,
+          file
+        );
 
-      toaster(
-        updateStockExchange.mutateAsync({
-          ...newData,
-        })
-      );
-    }
+        updateStockExchangeMutation({
+          id: newData.id,
+          imageUrl: img?.url,
+        });
+      }
+      reset();
+      onClose();
+    };
 
-    reset();
-    onClose();
+    toaster(callFn());
   });
 
   useEffect(() => {
@@ -94,13 +120,14 @@ export const BtnBuyStock = () => {
 
     setValue("stockSettingId", initialStockId);
     displayStockExchangeCreator();
-  });
+  }, [displayStockExchangeCreator, setValue, session]);
 
   const selectedStockSettting = stockSettingList.find(
-    (stockSetting) => stockSetting.id === getValues("stockSettingId")
+    (stockSetting) => stockSetting.id === watch("stockSettingId")
   ) ?? {
     maxStock: 0,
     stockExchangeSum: 0,
+    price: 0,
   };
 
   const remainingStockQuantity = selectedStockSettting
@@ -117,15 +144,15 @@ export const BtnBuyStock = () => {
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent minW="40%">
           <ModalHeader>Beli Saham</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text color="cream.100" fontWeight="bold" fontSize="xl">
               Jenis Saham*
             </Text>
-            <Select {...register("stockSettingId")}>
-              {getStockSettingList.data?.map((stockSetting) => (
+            <Select {...register("stockSettingId")} placeholder="Pilih Saham">
+              {stockSettingList.map((stockSetting) => (
                 <option
                   key={stockSetting.id}
                   value={stockSetting.id}
@@ -134,12 +161,13 @@ export const BtnBuyStock = () => {
             </Select>
 
             <Flex
-              color="white"
+              color="black"
               bg="cream.300"
               w="calc(100% + 3em)"
               flexDir="column"
               mx="-1.5em"
               borderRadius="10px"
+              p="2em"
             >
               <StringInput
                 title={"Jumlah Saham*"}
@@ -151,20 +179,19 @@ export const BtnBuyStock = () => {
               <Text fontSize="md">
                 Lembar Tersisa : {remainingStockQuantity ?? "Loading..."}
               </Text>
-              <Text>Jumlah yang harus dibayar : Rp. </Text>
+              <Text>
+                Jumlah yang harus dibayar :{" "}
+                {toCurrencyStr(
+                  remainingStockQuantity
+                    ? watch("quantity") * selectedStockSettting.price
+                    : 0
+                )}
+              </Text>
             </Flex>
-            <StringInput
-              title={"Nama Pembeli*"}
-              field="buyerName"
-              register={register}
-              error={formState.errors.buyerName}
-            />
-            <StringInput
-              title={"Alamat Pembeli*"}
-              field="buyerAddress"
-              register={register}
-              error={formState.errors.buyerAddress}
-            />
+            <Text>Informasi Pembayaran: </Text>
+            <Text>
+              Bank BCA, No. Rek: 7773058107 a.n. Kardina Sari Wardhani
+            </Text>
             <Text color="cream.100" fontWeight="bold" fontSize="xl">
               Bukti Pembayaran
             </Text>

@@ -69,7 +69,7 @@ const DashboardPageComponent = () => {
   return (
     <Flex flexDir="row">
       <DashboardSideNav />
-      <Flex flexDir="column" w="100%" p="1em" gap="1em">
+      <Flex flexDir="column" w="80%" p="1em" gap="1em">
         <Text fontSize="3xl" fontWeight="bold">
           Dashboard Saham
         </Text>

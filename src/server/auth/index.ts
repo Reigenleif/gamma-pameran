@@ -6,7 +6,7 @@ import {
   type DefaultSession,
   DefaultUser,
 } from "next-auth";
-import { compare } from "bcrypt";
+import { compare } from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { env } from "~/env.mjs";
@@ -32,6 +32,8 @@ declare module "next-auth" {
 
   interface User extends DefaultUser {
     role: UserRole;
+    address: string | null;
+    phoneNumber: string | null;
   }
 }
 
@@ -67,6 +69,10 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.email = user.email;
+        token.name = user.name;
+        token.address = user.address;
+        token.phoneNumber = user.phoneNumber;
       }
       return token;
     },

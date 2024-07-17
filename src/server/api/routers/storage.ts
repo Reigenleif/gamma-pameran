@@ -6,7 +6,7 @@ import {
   publicProcedure,
   protectedProcedure
 } from "~/server/api/trpc";
-import { AllowableFileTypeEnum, FolderEnum } from "~/utils/file";
+import { AllowableFileTypeEnum, FolderEnum, zodAllowableFileTypeEnum, zodFolderEnum } from "~/utils/file";
 import { bucket } from "~/server/bucket";
 import { env } from "~/env.mjs";
 
@@ -14,11 +14,7 @@ export const storageRouter = createTRPCRouter({
   generateURLForDownload: publicProcedure
     .input(
       z.object({
-        folder: z.union([
-          z.literal(FolderEnum.PROFILE),
-          z.literal(FolderEnum.DOCUMENT),
-          z.literal(FolderEnum.PAYMENT_PROOF)
-        ]),
+        folder: zodFolderEnum,
         filename: z.string()
       })
     )
@@ -48,20 +44,9 @@ export const storageRouter = createTRPCRouter({
   generateURLForUpload: protectedProcedure
     .input(
       z.object({
-        folder: z.union([
-          z.literal(FolderEnum.PROFILE),
-          z.literal(FolderEnum.DOCUMENT),
-          z.literal(FolderEnum.PAYMENT_PROOF)
-        ]),
+        folder: zodFolderEnum,
         filename: z.string(),
-        contentType: z.union([
-          z.literal(AllowableFileTypeEnum.PDF),
-          z.literal(AllowableFileTypeEnum.PNG),
-          z.literal(AllowableFileTypeEnum.JPEG),
-          z.literal(AllowableFileTypeEnum.PICTURES),
-          z.literal(AllowableFileTypeEnum.MP4),
-          z.literal(AllowableFileTypeEnum.ZIP),
-        ])
+        contentType: zodAllowableFileTypeEnum
       })
     )
     .mutation(async ({ input }) => {
@@ -88,7 +73,10 @@ export const storageRouter = createTRPCRouter({
         contentType: input.contentType
       });
 
+      const publicUrl = `https://storage.googleapis.com/${env.BUCKET_NAME}/${input.folder}/${sanitizedFilename}`;
+
       return {
+        publicUrl,
         url,
         sanitizedFilename,
         urlExpires: Date.now() + env.URL_EXPIRATION_TIME
@@ -98,10 +86,7 @@ export const storageRouter = createTRPCRouter({
   generateURLForDelete: protectedProcedure
     .input(
       z.object({
-        folder: z.union([
-          z.literal(FolderEnum.PROFILE),
-          z.literal(FolderEnum.DOCUMENT),
-        ]),
+        folder: zodFolderEnum,
         filename: z.string()
       })
     )

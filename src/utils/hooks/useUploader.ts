@@ -12,7 +12,7 @@ export const useUploader = () => {
         if (!file || !filename || !folder || !fileType) return;
         setIsLoading(true)
 
-        const {url: uploadUrl, sanitizedFilename} = await generateURLForUpload.mutateAsync({
+        const {url: uploadUrl, sanitizedFilename, publicUrl} = await generateURLForUpload.mutateAsync({
             filename,
             folder,
             contentType: fileType
@@ -27,7 +27,7 @@ export const useUploader = () => {
 
         setIsLoading(false)
 
-        return {url, filename: sanitizedFilename}
+        return {url, publicUrl, filename: sanitizedFilename}
     }
 
     return {uploader, isUploading: isLoading}

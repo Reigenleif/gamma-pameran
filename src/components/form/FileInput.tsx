@@ -29,7 +29,7 @@ export const FileInput = ({
       const x = document.createElement("a");
       x.href = imgUrl;
       x.download = imgUrl;
-      x.target = "_blank"
+      x.target = "_blank";
       x.click();
     }
   };
@@ -49,15 +49,19 @@ export const FileInput = ({
           fileState ? "file-input-default-file-exists" : "file-input-default"
         }
         cursor="pointer"
-        accept={allowed ? allowed.join(",") : `${AllowableFileTypeEnum.PICTURES} , ${AllowableFileTypeEnum.ZIP}`} // TODO : Kasih input props untuk menerima file type apa aja
+        accept={
+          allowed
+            ? allowed.join(",")
+            : `${AllowableFileTypeEnum.PICTURES} , ${AllowableFileTypeEnum.ZIP}`
+        } // TODO : Kasih input props untuk menerima file type apa aja
       />
       {imgUrl && (
         <>
           <Text color="blue.100" w="100%" textAlign="center" mt="1em">
-            You have uploaded a file
+            Anda telah mengunggah file
           </Text>
           <Button onClick={downloadTheFile} variant="mono-outline" w="100%">
-            Download My File
+            Unduh file terakhir
           </Button>
         </>
       )}
