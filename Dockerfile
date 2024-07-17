@@ -3,6 +3,7 @@
 FROM --platform=linux/amd64 node:18-alpine3.17 AS deps
 RUN apk add --no-cache libc6-compat openssl1.1-compat
 WORKDIR /app
+RUN echo "${CREDS_URL}"
 
 # Install Prisma Client - remove if not using Prisma
 
@@ -13,7 +14,7 @@ COPY prisma ./
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml\* ./
 
 # Copy Google Secret Credentials
-COPY secret ./
+# COPY secret ./
 
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
@@ -54,12 +55,18 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public/ ./public/
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/secret ./secret
+# COPY --from=builder /app/secret ./secret
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/ ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static/ ./.next/static/
 COPY --from=builder --chown=nextjs:nodejs /app/.next/server/ ./.next/server/
 
+ARG CREDS_URL
+ARG GOOGLE_APPLICATION_CREDENTIALS
+ENV GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
+ENV CREDS_URL=$CREDS_URL
+
+ADD ${CREDS_URL} ${GOOGLE_APPLICATION_CREDENTIALS}
 
 USER nextjs
 EXPOSE 3000
