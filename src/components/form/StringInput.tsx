@@ -1,4 +1,4 @@
-import { Input, Text } from "@chakra-ui/react";
+import { Flex, Input, Text } from "@chakra-ui/react";
 import {
   FieldErrors,
   FieldValues,
@@ -24,12 +24,12 @@ export const StringInput = <FormValues extends FieldValues>({
   isFrozen?: boolean;
   type?: "text" | "number";
 }) => (
-  <>
+  <Flex flexDir="column">
     <Text color="cream.100" fontWeight="bold" fontSize="xl">
       {title}
     </Text>
     {desc && (
-      <Text color="cream.100" fontWeight="bold" fontSize="md" my="0.5em">
+      <Text color="cream.200" fontWeight="bold" fontSize="sm">
         {desc}
       </Text>
     )}
@@ -45,5 +45,5 @@ export const StringInput = <FormValues extends FieldValues>({
     <Text color="salmon" h="1em">
       {error?.message ? (error.message as string) : ""}
     </Text>
-  </>
+  </Flex>
 );
