@@ -14,7 +14,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { custom, z } from "zod";
 import { DashboardSideNav } from "~/components/dashboard/SideNav";
 import { FileInput } from "~/components/form/FileInput";
 import { StringInput } from "~/components/form/StringInput";
@@ -54,6 +54,11 @@ const schema = z.object({
     .int("Harus diisi dengan angka")
     .positive("Jumlah lembar saham minimal 1"),
   stockCode: z.string().nonempty("Saham harus dipilih"),
+  customPrice: z
+    .number()
+    .int()
+    .positive("Harga saham harus bilangan positif")
+    .optional(),
 });
 
 schema.refine((data) => {
@@ -93,6 +98,10 @@ const PembelianComponent = () => {
     (stockSetting) => stockSetting.code === watch("stockCode")
   );
 
+  const customPriceVal = watch("customPrice");
+  const customPrice =
+    customPriceVal && customPriceVal >= 0 ? customPriceVal : null;
+
   const onSubmit = handleSubmit(async (data: FormFields) => {
     const callFunc = async () => {
       const selectedStockSetting = stockSettingList?.find(
@@ -108,6 +117,7 @@ const PembelianComponent = () => {
         buyerAddress: data.buyerAddress,
         quantity: data.quantity,
         stockSettingId: selectedStockSetting.id,
+        customPrice: customPrice ?? undefined,
       });
 
       const file = fileStateArr[0];
@@ -170,7 +180,6 @@ const PembelianComponent = () => {
             field="buyerAddress"
             error={formState.errors.buyerAddress}
           />
-
           <Text fontSize="xl" fontWeight="bold">
             Data Saham
           </Text>
@@ -192,6 +201,14 @@ const PembelianComponent = () => {
             type="number"
             error={formState.errors.quantity}
           />
+          <StringInput
+            register={register}
+            title={"Harga Satuan"}
+            field="customPrice"
+            type="number"
+            desc={"Opsional, kosongkan jika menggunakan harga saham default"}
+            error={formState.errors.customPrice}
+          />
           {selectedStockSetting && (
             <TableContainer>
               <Table>
@@ -204,13 +221,16 @@ const PembelianComponent = () => {
                 </Tr>
                 <Tr>
                   <Td>Harga Saham</Td>
-                  <Td>{`: ${toCurrencyStr(selectedStockSetting?.price)}`}</Td>
+                  <Td>{`: ${toCurrencyStr(
+                    customPrice ?? selectedStockSetting?.price
+                  )}`}</Td>
                 </Tr>
                 <Tr>
                   <Td>Total Harga</Td>
                   <Td w="90%">{`: ${toCurrencyStr(
                     watch("quantity") &&
-                      (selectedStockSetting?.price ?? 0) * watch("quantity")
+                      (customPrice ?? selectedStockSetting?.price ?? 0) *
+                        watch("quantity")
                   )}`}</Td>
                 </Tr>
               </Table>

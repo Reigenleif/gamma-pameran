@@ -117,6 +117,7 @@ export const stockRouter = createTRPCRouter({
         buyerName: z.string().optional(),
         buyerPhone: z.string().optional(),
         buyerAddress: z.string().optional(),
+        customPrice: z.number().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -180,7 +181,6 @@ export const stockRouter = createTRPCRouter({
             email: input.buyerEmail,
           },
         });
-        2;
         if (!buyerUser) {
           buyerUser = await ctx.prisma.user.create({
             data: {
@@ -202,7 +202,7 @@ export const stockRouter = createTRPCRouter({
             buyerId: buyerUser.id,
             stockSettingId: input.stockSettingId,
             quantity: input.quantity,
-            price: stockSetting.price,
+            price: input.customPrice ?? stockSetting.price,
             buyerName: input.buyerName ?? "",
             status: StockExchangeConfirmationStatus.PENDING,
             timeOccured: new Date(),
@@ -240,7 +240,7 @@ export const stockRouter = createTRPCRouter({
           buyerId: buyerUser.id,
           stockSettingId: input.stockSettingId,
           quantity: input.quantity,
-          price: stockSetting.price,
+          price: input.customPrice ?? stockSetting.price,
           buyerName: input.buyerName,
           status: StockExchangeConfirmationStatus.PENDING,
           timeOccured: new Date(),
