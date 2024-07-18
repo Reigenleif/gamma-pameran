@@ -45,7 +45,7 @@ export default function PembelianPAge() {
 }
 
 const schema = z.object({
-  buyerEmail: z.string().email().optional(),
+  buyerEmail: z.string().optional().or(z.string().email("Email tidak valid")),
   buyerName: z.string().optional(),
   buyerPhone: z.string().optional(),
   buyerAddress: z.string().optional(),
