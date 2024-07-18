@@ -45,7 +45,7 @@ export default function PembelianPAge() {
 }
 
 const schema = z.object({
-  buyerEmail: z.string().email("Email tidak valid").optional(),
+  buyerEmail: z.string().email().optional(),
   buyerName: z.string().optional(),
   buyerPhone: z.string().optional(),
   buyerAddress: z.string().optional(),
@@ -56,7 +56,6 @@ const schema = z.object({
   stockCode: z.string().nonempty("Saham harus dipilih"),
   customPrice: z
     .number()
-    .int()
     .positive("Harga saham harus bilangan positif")
     .optional(),
 });
