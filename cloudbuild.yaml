@@ -14,10 +14,14 @@ steps:
       - 'GOOGLE_CLIENT_ID=${_GOOGLE_CLIENT_ID}'
       - 'GOOGLE_CLIENT_SECRET=${_GOOGLE_CLIENT_SECRET}'
       - 'CREDS_URL=${_CREDS_URL}'
+      - 'GCR_SERVICE_NAME=${_GCR_SERVICE_NAME}'
   - name: gcr.io/cloud-builders/docker
     args: ["compose", "build"]
   - name: gcr.io/cloud-builders/docker
-    args: ["push", "asia-southeast1-docker.pkg.dev/${PROJECT_ID}/terrakota-stock-exchange/terrakota-stock-exchange"]
+    args: ["push", "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_GAR_REPO_NAME}"]
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: ['run', 'deploy', '${_GCR_SERVICE_NAME}', '--image', 'gcr.io/${PROJECT_ID}/${LOCATION}-docker.pkg.dev/${PROJECT_ID}/{GAR_REPO_NAME}', '--region', 'SERVICE_REGION']
     
 options:
   logging: CLOUD_LOGGING_ONLY
