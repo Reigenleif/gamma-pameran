@@ -21,7 +21,7 @@ steps:
     args: ["push", "${_GAR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_GAR_REPO_NAME}"]
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
-    args: ['run', 'deploy', '${_GCR_SERVICE_NAME}', '--image', 'gcr.io/${PROJECT_ID}/${_GAR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/{GAR_REPO_NAME}', '--region', '${_GAR_LOCATION}']
+    args: ['run', 'deploy', '${_GCR_SERVICE_NAME}', '--image', 'gcr.io/${PROJECT_ID}/${_GAR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_GAR_REPO_NAME}', '--region', '${_GAR_LOCATION}']
     
 options:
   logging: CLOUD_LOGGING_ONLY
