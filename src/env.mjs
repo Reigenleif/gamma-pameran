@@ -27,7 +27,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string().min(1),
     SESSION_COOKIE_DOMAIN: z.string(),
     SESSION_MAXAGE: z.number().int().positive(),
-    GOOGLE_APPLICATION_CREDENTIALS: z.string().min(1),
+    GOOGLE_APPLICATION_CREDENTIALS: z.string(),
     BUCKET_NAME: z.string().min(1),
     URL_EXPIRATION_TIME: z.preprocess(
       // If URL_EXPIRATION_TIME is not set, set it to 7 day
