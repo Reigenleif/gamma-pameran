@@ -21,6 +21,9 @@ services:
         GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
         GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
         CREDS_URL: ${CREDS_URL}
+        GAR_LOCATION: ${GAR_LOCATION}
+        GAR_REPO_NAME: ${GAR_REPO_NAME}
+        PROJECT_ID: ${PROJECT_ID}
     working_dir: /app
     volumes:
       - ./src/:/usr/src/app/src/
